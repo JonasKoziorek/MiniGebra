@@ -124,6 +124,9 @@ class Multiplication(BinaryOperator):
         if type(left) in neglect_types and type(right) == Variable:
             return f"{self.left}{self.right}"
 
+        if type(left) == Number and type(right) == Number:
+            return f"{left} * {right}"
+
         if type(left) in bracket_types:
             left = f"({left})"
 
@@ -134,6 +137,15 @@ class Multiplication(BinaryOperator):
 
     def diff(self):
         return self.left.diff() * self.right + self.left * self.right.diff()
+
+    def _isNumMul(self, left, right):
+        if type(left) == Number and type(right) == Number:
+            return True
+        else:
+            return False
+
+    def isNumMul(self):
+        return self._isNumMul(self.left, self.right)
 
     def simplify(self):
         left = self.left
@@ -184,6 +196,26 @@ class Multiplication(BinaryOperator):
         # (b/c)*a = (a*b)/c
         elif type(right) == Number and type(left) == Division and type(left.left) == Number:
             return Division(right*left.left, left.right.simplify())
+
+        # (a^b) * (c*/d) = (c*/d) * (a^b)
+        elif type(left) == Exponentiation and (type(right) == Multiplication or type(right) == Division):
+            return Multiplication(right, left)
+        
+        # a * ((b*c)*expr) = (a*b*c)*expr
+        elif type(left) == Number and type(right) == Multiplication and type(right.left) == Multiplication and self._isNumMul(right.left.left, right.left.right):
+            return Multiplication(left * right.left.left * right.left.right, right.right.simplify())
+
+        # a * (expr*(b*c)) = (a*b*c)*expr
+        elif type(left) == Number and type(right) == Multiplication and type(right.right) == Multiplication and self._isNumMul(right.right.left, right.right.right):
+            return Multiplication(left * right.right.left * right.right.right, right.left.simplify())
+
+        # (expr*(b*c))*a = (a*b*c)*expr
+        elif type(right) == Number and type(left) == Multiplication and type(left.right) == Multiplication and self._isNumMul(left.right.left, left.right.right):
+            return Multiplication(right * left.right.left * left.right.right, left.left.simplify())
+
+        # ((b*c)*expr)*a = (a*b*c)*expr
+        elif type(right) == Number and type(left) == Multiplication and type(left.left) == Multiplication and self._isNumMul(left.left.left, left.left.right):
+            return Multiplication(right * left.left.left * left.left.right, left.right.simplify())
 
         else:
             return Multiplication(left.simplify(), right.simplify())
@@ -288,31 +320,6 @@ class Number(Atom):
             return self.num == other
         else:
             return False
-
-    # def __add__(self, other):
-    #     if isinstance(other, Number):
-    #         return Number(self.num + other.num)
-    #     else:
-    #         return Plus(self, other)
-    
-    # def __sub__(self, other):
-    #     if isinstance(other, Number):
-    #         return Number(self.num - other.num)
-    #     else:
-    #         return Minus(self, other)
-    
-    # def __mul__(self, other):
-    #     if isinstance(other, Number):
-    #         return Number(self.num * other.num)
-    #     else:
-    #         return Multiplication(self, other)
-
-    # def __truediv__(self, other):
-    #     if isinstance(other, Number):
-    #         return Number(self.num / other.num)
-    #     else:
-    #         return Division(self, other)
-
 
 class Variable(Atom):
     def __init__(self, value):
