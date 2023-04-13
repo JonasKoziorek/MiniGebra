@@ -4,24 +4,24 @@ from Atoms import built_in_functions
 from Interpreter import Interpreter
 from Preprocessor import Preprocessor
 
-def compile_(text):
+def compile_input(text):
     try:
-        text = Preprocessor().preprocess(text)
+        commands, exprs = Preprocessor(text).preprocess()
         t = Tokenizer(tokens)
         p = Parser(t)
-        r = p.read(text)
-        return r
+        return commands, [p.parse(expr) for expr in exprs]
+
     except Exception as e:
         print(e)
-        return None
+        return None, None
 
 while True:
     text = input("MiniGebra> ")
-    r = compile_(text)
-    if r:
+    commands, expressions = compile_input(text)
+    if expressions:
         try:
             I = Interpreter(built_in_functions)
-            I.feed([r])
+            I.feed(expressions)
             print("Expression:")
             I.print()
             I.simplify()

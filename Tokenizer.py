@@ -40,3 +40,4 @@ class Tokenizer:
                     else:
                         return {"token": match[0], "type": type}
             return {"token": None, "type": "INVALID_CHAR"}
+

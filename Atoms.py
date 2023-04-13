@@ -36,10 +36,10 @@ import numpy as np
 # 0 - expr = expr
 # func(expr) = func(expr.simplify())
 
-class Directive:
+class Command:
     # known directives:
     # domain: R->R or R->R^2 or R->R^3 or R^2->R or R^2->R^3
-    # var: comma separated words/letters => x, y, az
+    # vars: comma separated words/letters => x, y, az
     # param: comma separated words/letters => a, b, abd
     def __init__(self, text: str):
         self.text = text
@@ -92,7 +92,15 @@ class BinaryOperator(Atom):
 
 class Division(BinaryOperator):
     def __repr__(self):
-        return f"{self.left} / {self.right}"
+        left = self.left ; right = self.right
+        if type(left) == Plus or type(left) == Minus:
+            return f"({self.left}) / {self.right}"
+
+        elif type(right) == Plus or type(right) == Minus:
+            return f"{self.left} / ({self.right})"
+
+        else:
+            return f"{self.left} / {self.right}"
 
     def diff(self):
         return (self.left.diff() * self.right - self.left * self.right.diff()) / (self.right ** Number(2))
@@ -127,7 +135,15 @@ class Division(BinaryOperator):
 
 class Multiplication(BinaryOperator):
     def __repr__(self):
-        return f"{self.left} * {self.right}"
+        left = self.left ; right = self.right
+        if type(left) == Plus or type(left) == Minus:
+            return f"({self.left}) / {self.right}"
+
+        elif type(right) == Plus or type(right) == Minus:
+            return f"{self.left} / ({self.right})"
+
+        else:
+            return f"{self.left} / {self.right}"
 
     def diff(self):
         return self.left.diff() * self.right + self.left * self.right.diff()
@@ -355,7 +371,7 @@ class Sin(Function):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Cos("cos", [arg]) * arg.diff()
+            return Cos([arg]) * arg.diff()
         else:
             self._error_message()
 
@@ -368,7 +384,7 @@ class Cos(Function):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Number(-1) * Sin("sin", [arg]) * arg.diff()
+            return Number(-1) * Sin([arg]) * arg.diff()
         else:
             self._error_message()
 
@@ -381,7 +397,7 @@ class Tan(Function):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Number(1) / (Cos("cos", self.args)*Cos("cos",self.args)) * arg.diff()
+            return Number(1) / (Cos(self.args)*Cos(self.args)) * arg.diff()
         else:
             self._error_message()
 
@@ -434,13 +450,21 @@ class Ln(Function):
         args = self.args
         # ln a^b = b * ln a
         if len(args) == 1 and type(args[0]) == Exponentiation:
-            return args[0].right.simplify() * Ln("ln", [args[0].left.simplify()])
+            return args[0].right.simplify() * Ln([args[0].left.simplify()])
         else:
             return self
 
 class Exponentiation(BinaryOperator):
     def __repr__(self):
-        return f"{self.left} ^ {self.right}"
+        left = str(self.left)
+        right = str(self.right)
+        if isinstance(self.right, BinaryOperator):
+            right = f"({self.right})"
+
+        if isinstance(self.left, BinaryOperator):
+            left = f"({self.left})"
+
+        return f"{left} ^ {right}"
     
     def simplify(self):
         left = self.left

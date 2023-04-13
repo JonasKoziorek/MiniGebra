@@ -1,15 +1,13 @@
 from Tokenizer import tokens, Tokenizer
 from Atoms import *
 
-###### inspired by article: https://itnext.io/writing-a-mathematical-expression-parser-35b0b78f869e
-
 class Parser:
 
     def __init__(self, tokenizer):
         self.tokenizer = tokenizer
         self.current = []
 
-    def read(self, string):
+    def parse(self, string):
         self.tokenizer.read(string)
         self.current = self.tokenizer.next_match()
         try:
@@ -135,7 +133,7 @@ class Parser:
             expr = self.current["token"]
             self.advance()
             expr = expr[1: -1]
-            return Directive(expr)
+            return Command(expr)
             # return  Parser(Tokenizer(tokens)).read(expr)
         
         else:
