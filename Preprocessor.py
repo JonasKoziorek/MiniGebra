@@ -4,6 +4,7 @@ class Preprocessor:
         pass
 
     def preprocess(self, expr):
+        return expr
         expr = expr.replace("+", " + ")
         expr = expr.replace("-", " - ")
         expr = expr.replace("*", " * ")

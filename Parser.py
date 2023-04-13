@@ -135,7 +135,8 @@ class Parser:
             expr = self.current["token"]
             self.advance()
             expr = expr[1: -1]
-            return  Parser(Tokenizer(tokens)).read(expr)
+            return Directive(expr)
+            # return  Parser(Tokenizer(tokens)).read(expr)
         
         else:
             raise Exception("Invalid basic token.")

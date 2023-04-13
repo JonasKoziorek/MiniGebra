@@ -36,6 +36,22 @@ import numpy as np
 # 0 - expr = expr
 # func(expr) = func(expr.simplify())
 
+class Directive:
+    # known directives:
+    # domain: R->R or R->R^2 or R->R^3 or R^2->R or R^2->R^3
+    # var: comma separated words/letters => x, y, az
+    # param: comma separated words/letters => a, b, abd
+    def __init__(self, text: str):
+        self.text = text
+
+    def simplify(self):
+        return self
+
+    def diff(self):
+        return self
+
+    def __repr__(self):
+        return self.text
 
 class Atom:
     def __init__(self):
@@ -57,6 +73,9 @@ class Atom:
         return Exponentiation(self, other)
 
     def simplify(self):
+        return self
+
+    def diff(self):
         return self
 
 class BinaryOperator(Atom):
