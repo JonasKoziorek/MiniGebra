@@ -44,7 +44,7 @@ class Interpreter:
             try:
                 index = self.names.index(expr.name)
                 func =  self.functions[index]
-                return func(expr.name, [self.rename_func(i) for i  in expr.args])
+                return func([self.rename_func(i) for i  in expr.args])
             except ValueError:
                 return expr
 

@@ -317,6 +317,15 @@ class Function(Atom):
         for arg in self.args[1:]:
             string += ", " + str(arg)
         return f"{self.name}({string})"
+    
+    def _error_message(self):
+        raise Exception(f"Function {self.name} only supports single variable differentiating.")
+
+    def diff(self):
+        if len(self.args) == 1:
+            return self * self.args[0].diff()
+        else:
+            self._error_message()
 
 class Sin(Function):
     name = "sin"
@@ -329,7 +338,7 @@ class Sin(Function):
             arg = self.args[0]
             return Cos("cos", [arg]) * arg.diff()
         else:
-            raise Exception(f"Function {self.name} accepts only one argument.")
+            self._error_message()
 
 class Cos(Function):
     name = "cos"
@@ -342,7 +351,7 @@ class Cos(Function):
             arg = self.args[0]
             return Number(-1) * Sin("sin", [arg]) * arg.diff()
         else:
-            raise Exception(f"Function {self.name} accepts only one argument.")
+            self._error_message()
 
 class Tan(Function):
     name = "tan"
@@ -355,7 +364,7 @@ class Tan(Function):
             arg = self.args[0]
             return Number(1) / (Cos("cos", self.args)*Cos("cos",self.args)) * arg.diff()
         else:
-            raise Exception(f"Function {self.name} accepts only one argument.")
+            self._error_message()
 
 class Asin(Function):
     name = "asin"
@@ -387,7 +396,7 @@ class Exp(Function):
             arg = self.args[0]
             return Exp(arg) * arg.diff()
         else:
-            raise Exception(f"Function {self.name} accepts only one argument.")
+            self._error_message()
 
 class Ln(Function):
     name = "ln"
@@ -400,7 +409,7 @@ class Ln(Function):
             arg = self.args[0]
             return Number(1) / arg * arg.diff()
         else:
-            raise Exception(f"Function {self.name} accepts only one argument.")
+            self._error_message()
 
     def simplify(self):
         args = self.args
