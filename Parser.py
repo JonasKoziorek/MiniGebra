@@ -1,5 +1,6 @@
-from Tokenizer import tokens, Tokenizer
-from Atoms import *
+from Atoms import Multiplication, Exponentiation, Division, Plus, Minus, Variable, Function, Number
+from Commands import valid_names, valid_commands, Command
+from Errors import ParseError
 
 class Parser:
 
@@ -7,14 +8,31 @@ class Parser:
         self.tokenizer = tokenizer
         self.current = []
 
-    def parse(self, string):
+    def parse_expr(self, string):
         self.tokenizer.read(string)
         self.current = self.tokenizer.next_match()
         try:
             return self.expression()
         except Exception as e:
-            raise Exception(f"Following error occured while parsing: {e}")
+            raise ParseError(f"Following error occured while parsing: {e}")
+
+    def parse_command(self, command):
+        command = command[1:-1]
+        tokens = command.split(":")
+        if len(tokens) == 2:
+            name = tokens[0]
+            body = tokens[1]
+            if name in valid_names:
+                ind = valid_names.index(name)
+                type_ = valid_commands[ind]
+                return type_(body)
+            else:
+                raise Exception(f"Unknown command {command}.\nAvailable commands are {valid_names}")
+        else:
+            raise ParseError(f"Command {command} is not valid.")
     
+
+
     def isValid(self, tokens: list[str]):
         if self.current["type"] == "INVALID_CHAR":
             # raise Exception("This character is not supported.")
@@ -96,10 +114,8 @@ class Parser:
     def basic(self):
         tok = self.current
 
-        if self.isToken(["IDENT"]):
+        if self.isToken(["VAR"]):
             self.advance()
-            next = self.current
-
             if self.isToken(['LPAR']):
                 self.advance()
                 args = [self.expression()]
@@ -115,8 +131,6 @@ class Parser:
             else:
                 return Variable(tok["token"])
 
-
-
         elif self.isToken(['LPAR']):
             self.advance()
             expr = self.expression()
@@ -128,8 +142,7 @@ class Parser:
             self.advance()
             return Number(tok["token"])
 
-
-        elif self.isToken(['STRING']):
+        elif self.isToken(['COMMAND']):
             expr = self.current["token"]
             self.advance()
             expr = expr[1: -1]
@@ -216,7 +229,7 @@ class Parser:
 #     def function(self):
 #         possible_func = self.multiplication()
 
-#         # if self.isToken(['NUMBER', 'IDENT']):
+#         # if self.isToken(['NUMBER', 'VAR']):
 #         #     return Function(possible_func.value, [self.function()] )
         
 #         if self.isToken(['LPAR']):
@@ -250,11 +263,11 @@ class Parser:
 #             self.advance()
 #             return Number(tok["token"])
 
-#         elif self.isToken('IDENT'):
+#         elif self.isToken('VAR'):
 #             self.advance()
 #             return Variable(tok["token"])
 
-#         elif self.isToken(['STRING']):
+#         elif self.isToken(['COMMAND']):
 #             expr = self.current["token"]
 #             self.advance()
 #             expr = expr[1: -1]

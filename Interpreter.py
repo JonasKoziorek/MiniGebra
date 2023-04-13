@@ -1,4 +1,4 @@
-from Atoms import *
+from Atoms import Function, BinaryOperator
 
 class Interpreter:
 

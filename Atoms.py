@@ -36,23 +36,6 @@ import numpy as np
 # 0 - expr = expr
 # func(expr) = func(expr.simplify())
 
-class Command:
-    # known directives:
-    # domain: R->R or R->R^2 or R->R^3 or R^2->R or R^2->R^3
-    # vars: comma separated words/letters => x, y, az
-    # param: comma separated words/letters => a, b, abd
-    def __init__(self, text: str):
-        self.text = text
-
-    def simplify(self):
-        return self
-
-    def diff(self):
-        return self
-
-    def __repr__(self):
-        return self.text
-
 class Atom:
     def __init__(self):
         pass
@@ -93,14 +76,14 @@ class BinaryOperator(Atom):
 class Division(BinaryOperator):
     def __repr__(self):
         left = self.left ; right = self.right
-        if type(left) == Plus or type(left) == Minus:
-            return f"({self.left}) / {self.right}"
+        bracket_types = [Plus, Minus, Division, Exponentiation]
+        if type(left) in bracket_types:
+            left = f"({self.left})"
 
-        elif type(right) == Plus or type(right) == Minus:
-            return f"{self.left} / ({self.right})"
+        if type(right) in bracket_types:
+            right = f"({self.right})"
 
-        else:
-            return f"{self.left} / {self.right}"
+        return f"{left} / {right}"
 
     def diff(self):
         return (self.left.diff() * self.right - self.left * self.right.diff()) / (self.right ** Number(2))
@@ -136,14 +119,18 @@ class Division(BinaryOperator):
 class Multiplication(BinaryOperator):
     def __repr__(self):
         left = self.left ; right = self.right
-        if type(left) == Plus or type(left) == Minus:
-            return f"({self.left}) / {self.right}"
+        bracket_types = [Plus, Minus, Exponentiation, Division]
+        neglect_types = [Number, Function, Variable]
+        if type(left) in neglect_types and type(right) == Variable:
+            return f"{self.left}{self.right}"
 
-        elif type(right) == Plus or type(right) == Minus:
-            return f"{self.left} / ({self.right})"
+        if type(left) in bracket_types:
+            left = f"({left})"
 
-        else:
-            return f"{self.left} / {self.right}"
+        if type(right) in bracket_types:
+            right = f"({right})"
+
+        return f"{left}{right}"
 
     def diff(self):
         return self.left.diff() * self.right + self.left * self.right.diff()
@@ -189,6 +176,14 @@ class Multiplication(BinaryOperator):
         # a * (b * x) = (a*b)*x
         elif type(left) == Number and type(right) == Multiplication and type(right.left) == Number:
             return Multiplication(Number(left.num * right.left.num), right.right.simplify())
+
+        # a * (b/c) = (a*b)/c
+        elif type(left) == Number and type(right) == Division and type(right.left) == Number:
+            return Division(left*right.left, right.right.simplify())
+
+        # (b/c)*a = (a*b)/c
+        elif type(right) == Number and type(left) == Division and type(left.left) == Number:
+            return Division(right*left.left, left.right.simplify())
 
         else:
             return Multiplication(left.simplify(), right.simplify())
@@ -432,6 +427,16 @@ class Exp(Function):
             return Exp(arg) * arg.diff()
         else:
             self._error_message()
+    
+    def simplify(self):
+        if len(self.args) == 1:
+            arg = self.args[0]
+            if type(arg) == Multiplication and type(arg.right) == Ln and len(arg.right.args) == 1:
+                return Exponentiation(arg.right.args[0].simplify(), arg.left.simplify())
+            else:
+                return self
+        else:
+            return self
 
 class Ln(Function):
     name = "ln"
@@ -488,7 +493,7 @@ class Exponentiation(BinaryOperator):
         # a ^ b = a^b
         elif type(left) == Number and type(right) == Number:
             return Number(left.num ** right.num)
-        
+
         else:
             return self
 

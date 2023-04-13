@@ -4,8 +4,8 @@ import re
 tokens = [
     [r"^\s+", 'WHITESPACE'], # selects whitespace, tabs, newlines at the beginning of a string
     [r"^-?\d+(?:\.\d+)?", 'NUMBER'], # selects numbers at the beginning of a string including floats and negative numbers
-    [r"^[a-zA-Z]+", 'IDENT'], # selects variables specified as characters or words consisting of letters
-    [r'^"[^"]+"', 'STRING'], # selects strings denoted by "string", only double quotes
+    [r"^[a-zA-Z]+", 'VAR'], # selects variables specified as characters or words consisting of letters
+    [r'^"[^"]+"', 'COMMAND'], # selects strings denoted by "string", only double quotes
     [r"^\+", 'PLUS'], # selects plus sign
     [r"^-", 'MINUS'], # selects minus sign
     [r"^\*", 'MUL'], # selects multiplication sign
