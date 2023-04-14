@@ -1,37 +1,6 @@
 import ast
 import numpy as np
 
-# from Simplifiers import (DivSimplifier,
-#                          MulSimplifier, 
-#                          PlusSimplifier, 
-#                          MinusSimplifier,
-#                          FunctionSimplifier,
-#                          ExpSimplifier,
-#                          LnSimplifier,
-#                          ExponSimplifier,
-#                          )
-
-# from Formatters import (DivFormatter,
-#                             MulFormatter,
-#                             PlusFormatter,
-#                             MinusFormatter,
-#                             ExponFormatter,
-#                             FunctionFormatter,
-#                             )
-
-# from Differentiators import (DivDifferentiator,
-#                              MulDifferentiator,
-#                              PlusDifferentiator,
-#                              MinusDifferentiator,
-#                              ExponDifferentiator,
-#                              FunctionDifferentiator,
-#                              SinDifferentiator,
-#                              CosDifferentiator,
-#                              TanDifferentiator,
-#                              ExpDifferentiator,
-#                              LnDifferentiator
-#                              )
-
 import Simplifiers as Simplifiers
 import Formatters as Formatters
 import Differentiators as Differentiators
@@ -74,6 +43,22 @@ class BinaryOperator(Atom):
     def __repr__(self):
         return f"operator({self.left},{self.right})"
 
+    def _to_list(self, operation):
+        a=[]; b=[]
+        left=self.left; right=self.right
+
+        if type(left) == operation:
+            a = left.to_list()
+        else:
+            a.append(left)
+        
+        if type(right) == operation:
+            b = right.to_list()
+        else:
+            b.append(right)
+        
+        return a+b
+
 class Div(BinaryOperator):
     def __repr__(self):
         return Formatters.Div(self.left, self.right, self).string_format()
@@ -83,6 +68,9 @@ class Div(BinaryOperator):
 
     def simplify(self):
         return Simplifiers.Div(self.left, self.right, self).simplify()
+
+    def to_list(self):
+        return self._to_list(Div)
 
 class Mul(BinaryOperator):
     def __repr__(self):
@@ -94,6 +82,10 @@ class Mul(BinaryOperator):
     def simplify(self):
         return Simplifiers.Mul(self.left, self.right, self).simplify()
 
+    def to_list(self):
+        return self._to_list(Mul)
+
+
 class Plus(BinaryOperator):
     def __repr__(self):
         return Formatters.Plus(self.left, self.right, self).string_format()
@@ -104,6 +96,9 @@ class Plus(BinaryOperator):
     def simplify(self):
         return Simplifiers.Plus(self.left, self.right, self).simplify()
 
+    def to_list(self):
+        return self._to_list(Plus)
+
 class Minus(BinaryOperator):
     def __repr__(self):
         return Formatters.Minus(self.left, self.right, self).string_format()
@@ -113,6 +108,9 @@ class Minus(BinaryOperator):
 
     def simplify(self):
         return Simplifiers.Minus(self.left, self.right, self).simplify()
+
+    def to_list(self):
+        return self._to_list(Minus)
 
 class Number(Atom):
     def __init__(self, value):

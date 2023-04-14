@@ -1,21 +1,4 @@
 import Atoms as Atoms
-# from Atoms import (Atom,
-#                    BinaryOperator,
-#                    Atoms.Div,
-#                    Atoms.Mul,
-#                    Atoms.Plus,
-#                    Atoms.Minus,
-#                    Atoms.Number,
-#                    Atoms.Variable,
-#                    Function,
-#                    Sin,
-#                    Cos,
-#                    Tan,
-#                    Exp,
-#                    Atoms.Ln,
-#                    Atoms.Expon,
-#                    built_in_functions)
-
 from numpy import gcd
 
 # some of the applied simplifications
@@ -212,6 +195,9 @@ class Plus(Binary):
 
         else:
             return Atoms.Plus(left.simplify(), right.simplify())
+
+    def _simplify_list(self, list):
+        a = 
     
 class Minus(Binary):
     def __init__(self, left, right, parent):
