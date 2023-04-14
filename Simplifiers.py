@@ -42,6 +42,22 @@ class Binary:
         self.right = right
         self.parent = parent
 
+    def _simplify_list(self, list_, operation):
+        if len(list_) > 1:
+            elem = list_[0]
+            rest = list_[1:]
+            for index, atom in enumerate(rest):
+                if type(elem) == type(atom):
+                    list_[index+1] = operation(elem, atom).simplify()
+                    list_ = self._simplify_list(list_[1:], operation)
+                    break
+            return list_
+        else:
+            return list_
+
+    def simplify_list(self):
+        return self.parent.to_ast(self._simplify_list(self.parent.to_list(), type(self.parent)))
+
 class Div(Binary):
     def __init__(self, left, right, parent):
         super().__init__(left, right, parent)
@@ -159,6 +175,7 @@ class Mul(Binary):
 
         else:
             return Atoms.Mul(left.simplify(), right.simplify())
+            
 
     
 class Plus(Binary):
@@ -196,8 +213,6 @@ class Plus(Binary):
         else:
             return Atoms.Plus(left.simplify(), right.simplify())
 
-    def _simplify_list(self, list):
-        a = 
     
 class Minus(Binary):
     def __init__(self, left, right, parent):

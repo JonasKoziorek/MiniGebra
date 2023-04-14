@@ -62,7 +62,7 @@ class Interpreter:
         self.expressions = [self.__simplify_internal(expr) for expr in self.expressions]
 
     def __simplify_internal(self, expr):
-        simplified = expr.simplify()
+        simplified = expr.simplify().simplify2()
         while str(simplified) != str(expr):
            expr = simplified 
            simplified = expr.simplify()

@@ -59,6 +59,12 @@ class BinaryOperator(Atom):
         
         return a+b
 
+    def _to_ast(self, list_, operation):
+        if len(list_) == 1:
+            return list_[0]
+        else:
+            return operation(list_[0], self._to_ast(list_[1:], operation))
+
 class Div(BinaryOperator):
     def __repr__(self):
         return Formatters.Div(self.left, self.right, self).string_format()
@@ -69,8 +75,14 @@ class Div(BinaryOperator):
     def simplify(self):
         return Simplifiers.Div(self.left, self.right, self).simplify()
 
+    def simplify2(self):
+        return Simplifiers.Div(self.left, self.right, self).simplify_list()
+
     def to_list(self):
         return self._to_list(Div)
+
+    def to_ast(self, list_):
+        return self._to_ast(list_, self)
 
 class Mul(BinaryOperator):
     def __repr__(self):
@@ -82,8 +94,14 @@ class Mul(BinaryOperator):
     def simplify(self):
         return Simplifiers.Mul(self.left, self.right, self).simplify()
 
+    def simplify2(self):
+        return Simplifiers.Mul(self.left, self.right, self).simplify_list()
+
     def to_list(self):
         return self._to_list(Mul)
+
+    def to_ast(self, list_):
+        return self._to_ast(list_, self)
 
 
 class Plus(BinaryOperator):
@@ -96,8 +114,14 @@ class Plus(BinaryOperator):
     def simplify(self):
         return Simplifiers.Plus(self.left, self.right, self).simplify()
 
+    def simplify2(self):
+        return Simplifiers.Plus(self.left, self.right, self).simplify_list()
+
     def to_list(self):
         return self._to_list(Plus)
+
+    def to_ast(self, list_):
+        return self._to_ast(list_, type(self))
 
 class Minus(BinaryOperator):
     def __repr__(self):
@@ -109,8 +133,14 @@ class Minus(BinaryOperator):
     def simplify(self):
         return Simplifiers.Minus(self.left, self.right, self).simplify()
 
+    def simplify2(self):
+        return Simplifiers.Minus(self.left, self.right, self).simplify_list()
+
     def to_list(self):
         return self._to_list(Minus)
+
+    def to_ast(self, list_):
+        return self._to_ast(list_, self)
 
 class Number(Atom):
     def __init__(self, value):
