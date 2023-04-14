@@ -1,6 +1,6 @@
 import ast
 import numpy as np
-from AtomSimplifiers import (DivisionSimplifier, 
+from Simplifiers import (DivisionSimplifier, 
                          MultiplicationSimplifier, 
                          PlusSimplifier, 
                          MinusSimplifier,
@@ -10,13 +10,20 @@ from AtomSimplifiers import (DivisionSimplifier,
                          ExponentiationSimplifier,
                          )
 
-from AtomFormatters import (DivisionFormatter,
+from Formatters import (DivisionFormatter,
                             MultiplicationFormatter,
                             PlusFormatter,
                             MinusFormatter,
                             ExponentiationFormatter,
                             FunctionFormatter,
                             )
+
+from Differentiators import (DivisionDifferentiator,
+                             MultiplicationDifferentiator,
+                             PlusDifferentiator,
+                             MinusDifferentiator,
+                             ExponentiationDifferentiator
+                             )
 
 class Atom:
     def __init__(self):
@@ -50,7 +57,7 @@ class BinaryOperator(Atom):
         self.right = right
 
     def diff(self):
-        pass
+        return self
 
     def __repr__(self):
         return f"operator({self.left},{self.right})"
@@ -60,7 +67,7 @@ class Division(BinaryOperator):
         return DivisionFormatter(self.left, self.right).string_format()
 
     def diff(self):
-        return (self.left.diff() * self.right - self.left * self.right.diff()) / (self.right ** Number(2))
+        return DivisionDifferentiator(self.left, self.right).diff()
 
     def simplify(self):
         return DivisionSimplifier(self.left, self.right).simplify()
@@ -70,7 +77,7 @@ class Multiplication(BinaryOperator):
         return MultiplicationFormatter(self.left, self.right).string_format()
 
     def diff(self):
-        return self.left.diff() * self.right + self.left * self.right.diff()
+        return MultiplicationDifferentiator(self.left, self.right).diff()
 
     def simplify(self):
         return MultiplicationSimplifier(self.left, self.right).simplify()
@@ -80,7 +87,7 @@ class Plus(BinaryOperator):
         return PlusFormatter(self.left, self.right).string_format()
 
     def diff(self):
-        return self.left.diff() + self.right.diff()
+        return PlusDifferentiator(self.left, self.right).diff()
 
     def simplify(self):
         return PlusSimplifier(self.left, self.right).simplify()
@@ -90,7 +97,7 @@ class Minus(BinaryOperator):
         return MinusFormatter(self.left, self.right).string_format()
 
     def diff(self):
-        return self.left.diff() - self.right.diff()
+        return MinusDifferentiator(self.left, self.right).diff()
 
     def simplify(self):
         return MinusSimplifier(self.left, self.right).simplify()
@@ -129,13 +136,13 @@ class Variable(Atom):
 
 
 class Function(Atom):
-    def __init__(self, name, args):
+    def __init__(self, name, args, func = None):
         self.name = name
         if type(args) != list:
             self.args = [args]
         else:
             self.args = args
-        self.func = None
+        self.func = func
 
     def simplify(self):
         return FunctionSimplifier(self.args, self.name).simplify()
@@ -155,8 +162,7 @@ class Function(Atom):
 class Sin(Function):
     name = "sin"
     def __init__(self, args):
-        super().__init__(self.name, args)
-        self.func = np.sin
+        super().__init__(self.name, args, np.sin)
 
     def diff(self):
         if len(self.args) == 1:
@@ -168,8 +174,7 @@ class Sin(Function):
 class Cos(Function):
     name = "cos"
     def __init__(self, args):
-        super().__init__(self.name, args)
-        self.func = np.cos
+        super().__init__(self.name, args, np.cos)
 
     def diff(self):
         if len(self.args) == 1:
@@ -181,8 +186,7 @@ class Cos(Function):
 class Tan(Function):
     name = "tan"
     def __init__(self, args):
-        super().__init__(self.name, args)
-        self.func = np.tan
+        super().__init__(self.name, args, np.tan)
 
     def diff(self):
         if len(self.args) == 1:
@@ -194,26 +198,22 @@ class Tan(Function):
 class Asin(Function):
     name = "asin"
     def __init__(self, args):
-        super().__init__(self.name, args)
-        self.func = np.arcsin
+        super().__init__(self.name, args, np.arcsin)
 
 class Acos(Function):
     name = "acos"
     def __init__(self, args):
-        super().__init__(self.name, args)
-        self.func = np.arccos
+        super().__init__(self.name, args, np.arccos)
 
 class Atan(Function):
     name = "atan"
     def __init__(self, args):
-        super().__init__(self.name, args)
-        self.func = np.arctan
+        super().__init__(self.name, args, np.arctan)
 
 class Exp(Function):
     name = "exp"
     def __init__(self, args):
-        super().__init__(self.name, args)
-        self.func = np.exp
+        super().__init__(self.name, args, np.exp)
 
     def diff(self):
         if len(self.args) == 1:
@@ -228,8 +228,7 @@ class Exp(Function):
 class Ln(Function):
     name = "ln"
     def __init__(self, args):
-        super().__init__(self.name, args)
-        self.func = np.log
+        super().__init__(self.name, args, np.log)
 
     def diff(self):
         if len(self.args) == 1:
@@ -249,6 +248,6 @@ class Exponentiation(BinaryOperator):
         return ExponentiationSimplifier(self.left, self.right).simplify()
 
     def diff(self):
-        return Exp([self.right * Ln([self.left])]).diff()
+        return ExponentiationDifferentiator(self.left, self.right).diff()
 
 built_in_functions = [Sin, Cos, Tan, Asin, Acos, Atan, Exp, Ln]
