@@ -28,12 +28,20 @@ class Mul(Binary):
     def string_format(self):
         left = self.left ; right = self.right
         bracket_types = [Atoms.Plus, Atoms.Minus, Atoms.Expon, Atoms.Div]
-        neglect_types = [Atoms.Number, Atoms.Function, Atoms.Variable]
-        if type(left) in neglect_types and type(right) == Atoms.Variable:
-            return f"{self.left}{self.right}"
-
+        neglect_types = [Atoms.Function, Atoms.Variable, Atoms.Number, *Atoms.built_in_functions]
         if type(left) == Atoms.Number and type(right) == Atoms.Number:
-            return f"{left} * {right}"
+            if left.num < 0:
+                return f"({left} * {right})"
+            else:
+                return f"{left} * {right}"
+
+        if type(left) in neglect_types and type(right) in neglect_types:
+            if type(left) == Atoms.Number and left.num < 0:
+                return f"({self.left}{self.right})"
+            elif type(right) == Atoms.Number and right.num < 0:
+                return f"({self.right}{self.left})"
+            else:
+                return f"{self.left}{self.right}"
 
         if type(left) in bracket_types:
             left = f"({left})"
@@ -57,7 +65,6 @@ class Minus(Binary):
     def string_format(self):
         return f"{self.left} - {self.right}"
 
-
 class Expon(Binary):
     def __init__(self, left, right, parent):
         super().__init__(left, right, parent)
@@ -72,7 +79,6 @@ class Expon(Binary):
             left = f"({self.left})"
 
         return f"{left} ^ {right}"
-
 
 class Function:
     def __init__(self, name, args, parent):
