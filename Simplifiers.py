@@ -138,7 +138,7 @@ class Mul(Binary):
         # expr ^ a * expr ^ b = expr ^ (a+b)
         elif type(left) == Atoms.Expon and type(right) == Atoms.Expon:
             if type(left.right) == Atoms.Number and type(right.right) == Atoms.Number and str(left.left) == str(right.left):
-                return Atoms.Expon(left.left.simplify_expr(), left.right.num * right.right.num)
+                return Atoms.Expon(left.left.simplify_expr(), Atoms.Number(left.right.num * right.right.num))
             else:
                 return self.parent
 
@@ -173,6 +173,14 @@ class Mul(Binary):
         # ((b*c)*expr)*a = (a*b*c)*expr
         elif type(right) == Atoms.Number and type(left) == Atoms.Mul and type(left.left) == Atoms.Mul and self._isNumMul(left.left.left, left.left.right):
             return Atoms.Mul(right * left.left.left * left.left.right, left.right.simplify_expr())
+
+        # expr * expr
+        elif str(left) == str(right):
+            return Atoms.Expon(left, Atoms.Number(2))
+
+        # expr * expr ^ a
+        elif type(right) == Atoms.Expon and str(left) == str(right.left):
+            return Atoms.Expon(left, Atoms.Number(2+1))
 
         else:
             return Atoms.Mul(left.simplify_expr(), right.simplify_expr())
@@ -211,7 +219,7 @@ class Plus(Binary):
         # a*expr + b*expr = (a+b) * expr
         elif type(left) == Atoms.Mul and type(right) == Atoms.Mul:
             if type(left.left) == Atoms.Number and type(right.left) == Atoms.Number and str(left.right) == str(right.right):
-                return (left.left + right.left) * left.right.simplify_expr()
+                return Atoms.Number(left.left.num + right.left.num) * left.right.simplify_expr()
             else:
                 return Atoms.Plus(left.simplify_expr(), right.simplify_expr())
 
