@@ -1,4 +1,4 @@
-from Atoms import Multiplication, Exponentiation, Division, Plus, Minus, Variable, Function, Number
+from Atoms import Mul, Expon, Div, Plus, Minus, Variable, Function, Number
 from Commands import valid_names, valid_commands, Command
 from Errors import ParseError
 
@@ -77,9 +77,9 @@ class Parser:
             type = self.current["type"]
             self.advance()
             if type == "MUL":
-                left = Multiplication(left, self.exponentiation())
+                left = Mul(left, self.exponentiation())
             elif type == "DIV":
-                left = Division(left, self.exponentiation())
+                left = Div(left, self.exponentiation())
 
         return left
 
@@ -88,7 +88,7 @@ class Parser:
 
         while self.isToken(['EXP']):
             self.advance()
-            left = Exponentiation(left, self.basic())
+            left = Expon(left, self.basic())
 
         return left
 
@@ -211,9 +211,9 @@ class Parser:
 #             type = self.current["type"]
 #             self.advance()
 #             if type == "MUL":
-#                 left = Multiplication(left, self.exponentiation())
+#                 left = Mul(left, self.exponentiation())
 #             elif type == "DIV":
-#                 left = Division(left, self.exponentiation())
+#                 left = Div(left, self.exponentiation())
 
 #         return left
 
@@ -222,7 +222,7 @@ class Parser:
 
 #         while self.isToken(['EXP']):
 #             self.advance()
-#             left = Exponentiation(left, self.basic())
+#             left = Expon(left, self.basic())
 
 #         return left
 
