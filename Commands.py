@@ -7,7 +7,7 @@ class Command:
     def __init__(self, text: str):
         self.text = text
 
-    def simplify(self):
+    def simplify_expr(self):
         return self
 
     def diff(self):

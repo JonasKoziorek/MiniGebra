@@ -58,14 +58,14 @@ class Interpreter:
     def diff(self):
         self.expressions = [expr.diff() for expr in self.expressions]
 
-    def simplify(self):
+    def simplify_expr(self):
         self.expressions = [self.__simplify_internal(expr) for expr in self.expressions]
 
     def __simplify_internal(self, expr):
-        simplified = expr.simplify().simplify2()
+        simplified = expr.simplify()
         while str(simplified) != str(expr):
            expr = simplified 
-           simplified = expr.simplify()
+           simplified = expr.simplify_expr()
         return simplified
 
 
