@@ -67,8 +67,3 @@ class Interpreter:
            expr = simplified 
            simplified = expr.simplify_expr()
         return simplified
-
-
-
-
-

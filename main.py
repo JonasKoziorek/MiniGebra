@@ -3,6 +3,7 @@ from Parser import Parser
 from Atoms import built_in_functions
 from Interpreter import Interpreter
 from Preprocessor import Preprocessor
+from Errors import *
 
 def compile_input(text):
     try:
