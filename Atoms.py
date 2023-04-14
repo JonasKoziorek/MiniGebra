@@ -1,5 +1,6 @@
 import ast
 import numpy as np
+
 from Simplifiers import (DivisionSimplifier, 
                          MultiplicationSimplifier, 
                          PlusSimplifier, 
@@ -22,7 +23,13 @@ from Differentiators import (DivisionDifferentiator,
                              MultiplicationDifferentiator,
                              PlusDifferentiator,
                              MinusDifferentiator,
-                             ExponentiationDifferentiator
+                             ExponentiationDifferentiator,
+                             FunctionDifferentiator,
+                             SinDifferentiator,
+                             CosDifferentiator,
+                             TanDifferentiator,
+                             ExpDifferentiator,
+                             LnDifferentiator
                              )
 
 class Atom:
@@ -149,15 +156,10 @@ class Function(Atom):
 
     def __repr__(self):
         return FunctionFormatter(self.name, self.args).string_format()
-    
-    def _error_message(self):
-        raise Exception(f"Function {self.name} only supports single variable differentiating.")
 
     def diff(self):
-        if len(self.args) == 1:
-            return self * self.args[0].diff()
-        else:
-            self._error_message()
+        return FunctionDifferentiator(self.name, self.args).diff()
+        
 
 class Sin(Function):
     name = "sin"
@@ -165,11 +167,7 @@ class Sin(Function):
         super().__init__(self.name, args, np.sin)
 
     def diff(self):
-        if len(self.args) == 1:
-            arg = self.args[0]
-            return Cos([arg]) * arg.diff()
-        else:
-            self._error_message()
+        return SinDifferentiator(self.name, self.args).diff()
 
 class Cos(Function):
     name = "cos"
@@ -177,11 +175,7 @@ class Cos(Function):
         super().__init__(self.name, args, np.cos)
 
     def diff(self):
-        if len(self.args) == 1:
-            arg = self.args[0]
-            return Number(-1) * Sin([arg]) * arg.diff()
-        else:
-            self._error_message()
+        return CosDifferentiator(self.name, self.args).diff()
 
 class Tan(Function):
     name = "tan"
@@ -189,11 +183,7 @@ class Tan(Function):
         super().__init__(self.name, args, np.tan)
 
     def diff(self):
-        if len(self.args) == 1:
-            arg = self.args[0]
-            return Number(1) / (Cos(self.args)*Cos(self.args)) * arg.diff()
-        else:
-            self._error_message()
+        return TanDifferentiator(self.name, self.args).diff()
 
 class Asin(Function):
     name = "asin"
@@ -216,11 +206,7 @@ class Exp(Function):
         super().__init__(self.name, args, np.exp)
 
     def diff(self):
-        if len(self.args) == 1:
-            arg = self.args[0]
-            return Exp(arg) * arg.diff()
-        else:
-            self._error_message()
+        return ExpDifferentiator(self.name, self.args).diff()
     
     def simplify(self):
         return ExpSimplifier(self.args).simplify()
@@ -231,11 +217,8 @@ class Ln(Function):
         super().__init__(self.name, args, np.log)
 
     def diff(self):
-        if len(self.args) == 1:
-            arg = self.args[0]
-            return Number(1) / arg * arg.diff()
-        else:
-            self._error_message()
+        return LnDifferentiator(self.name, self.args).diff()
+
 
     def simplify(self):
         return LnSimplifier(self.args).simplify()
