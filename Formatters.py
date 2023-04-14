@@ -1,11 +1,11 @@
 import Atoms as Atoms
 
-class BinaryFormatter:
+class Binary:
     def __init__(self, left, right):
         self.left = left
         self.right = right
 
-class DivisionFormatter(BinaryFormatter):
+class Division(Binary):
     def __init__(self, left, right):
         super().__init__(left, right)
     
@@ -20,7 +20,7 @@ class DivisionFormatter(BinaryFormatter):
 
         return f"{left} / {right}"
 
-class MultiplicationFormatter(BinaryFormatter):
+class Multiplication(Binary):
     def __init__(self, left, right):
         super().__init__(left, right)
     
@@ -42,14 +42,14 @@ class MultiplicationFormatter(BinaryFormatter):
 
         return f"{left}{right}"
 
-class PlusFormatter(BinaryFormatter):
+class Plus(Binary):
     def __init__(self, left, right):
         super().__init__(left, right)
     
     def string_format(self):
         return f"{self.left} + {self.right}"
 
-class MinusFormatter(BinaryFormatter):
+class Minus(Binary):
     def __init__(self, left, right):
         super().__init__(left, right)
     
@@ -57,7 +57,7 @@ class MinusFormatter(BinaryFormatter):
         return f"{self.left} - {self.right}"
 
 
-class ExponentiationFormatter(BinaryFormatter):
+class Exponentiation(Binary):
     def __init__(self, left, right):
         super().__init__(left, right)
     
@@ -73,7 +73,7 @@ class ExponentiationFormatter(BinaryFormatter):
         return f"{left} ^ {right}"
 
 
-class FunctionFormatter:
+class Function:
     def __init__(self, name, args):
         self.name = name
         self.args = args

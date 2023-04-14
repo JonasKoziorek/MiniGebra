@@ -1,47 +1,47 @@
 import Atoms as Atoms
 from Errors import DifferentiationError
 
-class BinaryDifferentiator:
+class Binary:
     def __init__(self, left, right):
         self.left = left
         self.right = right
 
-class DivisionDifferentiator(BinaryDifferentiator):
+class Division(Binary):
     def __init__(self, left, right):
         super().__init__(left, right)
 
     def diff(self):
         return (self.left.diff() * self.right - self.left * self.right.diff()) / (self.right ** Atoms.Number(2))
 
-class MultiplicationDifferentiator(BinaryDifferentiator):
+class Multiplication(Binary):
     def __init__(self, left, right):
         super().__init__(left, right)
 
     def diff(self):
         return self.left.diff() * self.right + self.left * self.right.diff()
 
-class PlusDifferentiator(BinaryDifferentiator):
+class Plus(Binary):
     def __init__(self, left, right):
         super().__init__(left, right)
 
     def diff(self):
         return self.left.diff() + self.right.diff()
 
-class MinusDifferentiator(BinaryDifferentiator):
+class Minus(Binary):
     def __init__(self, left, right):
         super().__init__(left, right)
 
     def diff(self):
         return self.left.diff() - self.right.diff()
 
-class ExponentiationiationDifferentiator(BinaryDifferentiator):
+class Exponentiation(Binary):
     def __init__(self, left, right):
         super().__init__(left, right)
 
     def diff(self):
         return Atoms.Exp([self.right * Atoms.Ln([self.left])]).diff()
 
-class FunctionDifferentiator:
+class Function:
     def __init__(self,name, args):
         self.name = name
         self.args = args
@@ -55,7 +55,7 @@ class FunctionDifferentiator:
         else:
             self._error_message()
 
-class SinDifferentiator(FunctionDifferentiator):
+class Sin(Function):
     def __init__(self, name, args):
         super().__init__(name, args)
 
@@ -66,7 +66,7 @@ class SinDifferentiator(FunctionDifferentiator):
         else:
             self._error_message()
 
-class CosDifferentiator(FunctionDifferentiator):
+class Cos(Function):
     def __init__(self, name, args):
         super().__init__(name, args)
 
@@ -77,7 +77,7 @@ class CosDifferentiator(FunctionDifferentiator):
         else:
             self._error_message()
 
-class TanDifferentiator(FunctionDifferentiator):
+class Tan(Function):
     def __init__(self, name, args):
         super().__init__(name, args)
 
@@ -88,7 +88,7 @@ class TanDifferentiator(FunctionDifferentiator):
         else:
             self._error_message()
 
-class AsinDifferentiator(FunctionDifferentiator):
+class Asin(Function):
     def __init__(self, name, args):
         super().__init__(name, args)
 
@@ -96,7 +96,7 @@ class AsinDifferentiator(FunctionDifferentiator):
         # to be added
         return self
 
-class AcosDifferentiator(FunctionDifferentiator):
+class Acos(Function):
     def __init__(self, name, args):
         super().__init__(name, args)
 
@@ -104,7 +104,7 @@ class AcosDifferentiator(FunctionDifferentiator):
         # to be added
         return self
 
-class AtanDifferentiator(FunctionDifferentiator):
+class Atan(Function):
     def __init__(self, name, args):
         super().__init__(name, args)
 
@@ -112,7 +112,7 @@ class AtanDifferentiator(FunctionDifferentiator):
         # to be added
         return self
 
-class ExpDifferentiator(FunctionDifferentiator):
+class Exp(Function):
     def __init__(self, name, args):
         super().__init__(name, args)
 
@@ -123,7 +123,7 @@ class ExpDifferentiator(FunctionDifferentiator):
         else:
             self._error_message()
 
-class LnDifferentiator(FunctionDifferentiator):
+class Ln(Function):
     def __init__(self, name, args):
         super().__init__(name, args)
 
