@@ -1,4 +1,4 @@
-from Atoms import *
+import Atoms as Atoms
 
 class BinaryFormatter:
     def __init__(self, left, right):
@@ -11,7 +11,7 @@ class DivisionFormatter(BinaryFormatter):
     
     def string_format(self):
         left = self.left ; right = self.right
-        bracket_types = [Plus, Minus, Division, Exponentiation]
+        bracket_types = [Atoms.Plus, Atoms.Minus, Atoms.Division, Atoms.Exponentiation]
         if type(left) in bracket_types:
             left = f"({self.left})"
 
@@ -26,12 +26,12 @@ class MultiplicationFormatter(BinaryFormatter):
     
     def string_format(self):
         left = self.left ; right = self.right
-        bracket_types = [Plus, Minus, Exponentiation, Division]
-        neglect_types = [Number, Function, Variable]
-        if type(left) in neglect_types and type(right) == Variable:
+        bracket_types = [Atoms.Plus, Atoms.Minus, Atoms.Exponentiation, Atoms.Division]
+        neglect_types = [Atoms.Number, Atoms.Function, Atoms.Variable]
+        if type(left) in neglect_types and type(right) == Atoms.Variable:
             return f"{self.left}{self.right}"
 
-        if type(left) == Number and type(right) == Number:
+        if type(left) == Atoms.Number and type(right) == Atoms.Number:
             return f"{left} * {right}"
 
         if type(left) in bracket_types:
@@ -64,10 +64,10 @@ class ExponentiationFormatter(BinaryFormatter):
     def string_format(self):
         left = str(self.left)
         right = str(self.right)
-        if isinstance(self.right, BinaryOperator):
+        if isinstance(self.right, Atoms.BinaryOperator):
             right = f"({self.right})"
 
-        if isinstance(self.left, BinaryOperator):
+        if isinstance(self.left, Atoms.BinaryOperator):
             left = f"({self.left})"
 
         return f"{left} ^ {right}"

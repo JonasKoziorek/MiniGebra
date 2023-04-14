@@ -1,4 +1,4 @@
-from Atoms import *
+import Atoms as Atoms
 from Errors import DifferentiationError
 
 class BinaryDifferentiator:
@@ -11,7 +11,7 @@ class DivisionDifferentiator(BinaryDifferentiator):
         super().__init__(left, right)
 
     def diff(self):
-        return (self.left.diff() * self.right - self.left * self.right.diff()) / (self.right ** Number(2))
+        return (self.left.diff() * self.right - self.left * self.right.diff()) / (self.right ** Atoms.Number(2))
 
 class MultiplicationDifferentiator(BinaryDifferentiator):
     def __init__(self, left, right):
@@ -34,12 +34,12 @@ class MinusDifferentiator(BinaryDifferentiator):
     def diff(self):
         return self.left.diff() - self.right.diff()
 
-class ExponentiationDifferentiator(BinaryDifferentiator):
+class ExponentiationiationDifferentiator(BinaryDifferentiator):
     def __init__(self, left, right):
         super().__init__(left, right)
 
     def diff(self):
-        return Exp([self.right * Ln([self.left])]).diff()
+        return Atoms.Exp([self.right * Atoms.Ln([self.left])]).diff()
 
 class FunctionDifferentiator:
     def __init__(self,name, args):
@@ -62,7 +62,7 @@ class SinDifferentiator(FunctionDifferentiator):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Cos([arg]) * arg.diff()
+            return Atoms.Cos([arg]) * arg.diff()
         else:
             self._error_message()
 
@@ -73,7 +73,7 @@ class CosDifferentiator(FunctionDifferentiator):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Number(-1) * Sin([arg]) * arg.diff()
+            return Atoms.Number(-1) * Atoms.Sin([arg]) * arg.diff()
         else:
             self._error_message()
 
@@ -84,7 +84,7 @@ class TanDifferentiator(FunctionDifferentiator):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Number(1) / (Cos(self.args)*Cos(self.args)) * arg.diff()
+            return Atoms.Number(1) / (Atoms.Cos(self.args)*Atoms.Cos(self.args)) * arg.diff()
         else:
             self._error_message()
 
@@ -119,7 +119,7 @@ class ExpDifferentiator(FunctionDifferentiator):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Exp(arg) * arg.diff()
+            return Atoms.Exp(arg) * arg.diff()
         else:
             self._error_message()
 
@@ -130,6 +130,6 @@ class LnDifferentiator(FunctionDifferentiator):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Number(1) / arg * arg.diff()
+            return Atoms.Number(1) / arg * arg.diff()
         else:
             self._error_message()

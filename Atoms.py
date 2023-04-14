@@ -1,36 +1,41 @@
 import ast
 import numpy as np
 
-from Simplifiers import (DivisionSimplifier, 
-                         MultiplicationSimplifier, 
-                         PlusSimplifier, 
-                         MinusSimplifier,
-                         FunctionSimplifier,
-                         ExpSimplifier,
-                         LnSimplifier,
-                         ExponentiationSimplifier,
-                         )
+# from Simplifiers import (DivisionSimplifier,
+#                          MultiplicationSimplifier, 
+#                          PlusSimplifier, 
+#                          MinusSimplifier,
+#                          FunctionSimplifier,
+#                          ExpSimplifier,
+#                          LnSimplifier,
+#                          ExponentiationSimplifier,
+#                          )
 
-from Formatters import (DivisionFormatter,
-                            MultiplicationFormatter,
-                            PlusFormatter,
-                            MinusFormatter,
-                            ExponentiationFormatter,
-                            FunctionFormatter,
-                            )
+# from Formatters import (DivisionFormatter,
+#                             MultiplicationFormatter,
+#                             PlusFormatter,
+#                             MinusFormatter,
+#                             ExponentiationFormatter,
+#                             FunctionFormatter,
+#                             )
 
-from Differentiators import (DivisionDifferentiator,
-                             MultiplicationDifferentiator,
-                             PlusDifferentiator,
-                             MinusDifferentiator,
-                             ExponentiationDifferentiator,
-                             FunctionDifferentiator,
-                             SinDifferentiator,
-                             CosDifferentiator,
-                             TanDifferentiator,
-                             ExpDifferentiator,
-                             LnDifferentiator
-                             )
+# from Differentiators import (DivisionDifferentiator,
+#                              MultiplicationDifferentiator,
+#                              PlusDifferentiator,
+#                              MinusDifferentiator,
+#                              ExponentiationDifferentiator,
+#                              FunctionDifferentiator,
+#                              SinDifferentiator,
+#                              CosDifferentiator,
+#                              TanDifferentiator,
+#                              ExpDifferentiator,
+#                              LnDifferentiator
+#                              )
+
+import Simplifiers as Simplifiers
+import Formatters as Formatters
+import Differentiators as Differentiators
+
 
 class Atom:
     def __init__(self):
@@ -71,43 +76,43 @@ class BinaryOperator(Atom):
 
 class Division(BinaryOperator):
     def __repr__(self):
-        return DivisionFormatter(self.left, self.right).string_format()
+        return Formatters.DivisionFormatter(self.left, self.right).string_format()
 
     def diff(self):
-        return DivisionDifferentiator(self.left, self.right).diff()
+        return Differentiators.DivisionDifferentiator(self.left, self.right).diff()
 
     def simplify(self):
-        return DivisionSimplifier(self.left, self.right).simplify()
+        return Simplifiers.DivisionSimplifier(self.left, self.right).simplify()
 
 class Multiplication(BinaryOperator):
     def __repr__(self):
-        return MultiplicationFormatter(self.left, self.right).string_format()
+        return Formatters.MultiplicationFormatter(self.left, self.right).string_format()
 
     def diff(self):
-        return MultiplicationDifferentiator(self.left, self.right).diff()
+        return Differentiators.MultiplicationDifferentiator(self.left, self.right).diff()
 
     def simplify(self):
-        return MultiplicationSimplifier(self.left, self.right).simplify()
+        return Simplifiers.MultiplicationSimplifier(self.left, self.right).simplify()
 
 class Plus(BinaryOperator):
     def __repr__(self):
-        return PlusFormatter(self.left, self.right).string_format()
+        return Formatters.PlusFormatter(self.left, self.right).string_format()
 
     def diff(self):
-        return PlusDifferentiator(self.left, self.right).diff()
+        return Differentiators.PlusDifferentiator(self.left, self.right).diff()
 
     def simplify(self):
-        return PlusSimplifier(self.left, self.right).simplify()
+        return Simplifiers.PlusSimplifier(self.left, self.right).simplify()
 
 class Minus(BinaryOperator):
     def __repr__(self):
-        return MinusFormatter(self.left, self.right).string_format()
+        return Formatters.MinusFormatter(self.left, self.right).string_format()
 
     def diff(self):
-        return MinusDifferentiator(self.left, self.right).diff()
+        return Differentiators.MinusDifferentiator(self.left, self.right).diff()
 
     def simplify(self):
-        return MinusSimplifier(self.left, self.right).simplify()
+        return Simplifiers.MinusSimplifier(self.left, self.right).simplify()
 
 class Number(Atom):
     def __init__(self, value):
@@ -152,13 +157,13 @@ class Function(Atom):
         self.func = func
 
     def simplify(self):
-        return FunctionSimplifier(self.args, self.name).simplify()
+        return Simplifiers.FunctionSimplifier(self.args, self.name).simplify()
 
     def __repr__(self):
-        return FunctionFormatter(self.name, self.args).string_format()
+        return Formatters.FunctionFormatter(self.name, self.args).string_format()
 
     def diff(self):
-        return FunctionDifferentiator(self.name, self.args).diff()
+        return Differentiators.FunctionDifferentiator(self.name, self.args).diff()
         
 
 class Sin(Function):
@@ -167,7 +172,7 @@ class Sin(Function):
         super().__init__(self.name, args, np.sin)
 
     def diff(self):
-        return SinDifferentiator(self.name, self.args).diff()
+        return Differentiators.SinDifferentiator(self.name, self.args).diff()
 
 class Cos(Function):
     name = "cos"
@@ -175,7 +180,7 @@ class Cos(Function):
         super().__init__(self.name, args, np.cos)
 
     def diff(self):
-        return CosDifferentiator(self.name, self.args).diff()
+        return Differentiators.CosDifferentiator(self.name, self.args).diff()
 
 class Tan(Function):
     name = "tan"
@@ -183,7 +188,7 @@ class Tan(Function):
         super().__init__(self.name, args, np.tan)
 
     def diff(self):
-        return TanDifferentiator(self.name, self.args).diff()
+        return Differentiators.TanDifferentiator(self.name, self.args).diff()
 
 class Asin(Function):
     name = "asin"
@@ -206,10 +211,10 @@ class Exp(Function):
         super().__init__(self.name, args, np.exp)
 
     def diff(self):
-        return ExpDifferentiator(self.name, self.args).diff()
+        return Differentiators.ExpDifferentiator(self.name, self.args).diff()
     
     def simplify(self):
-        return ExpSimplifier(self.args).simplify()
+        return Simplifiers.ExpSimplifier(self.args).simplify()
 
 class Ln(Function):
     name = "ln"
@@ -217,20 +222,20 @@ class Ln(Function):
         super().__init__(self.name, args, np.log)
 
     def diff(self):
-        return LnDifferentiator(self.name, self.args).diff()
+        return Differentiators.LnDifferentiator(self.name, self.args).diff()
 
 
     def simplify(self):
-        return LnSimplifier(self.args).simplify()
+        return Simplifiers.LnSimplifier(self.args).simplify()
 
 class Exponentiation(BinaryOperator):
     def __repr__(self):
-        return ExponentiationFormatter(self.left, self.right).string_format()
+        return Formatters.ExponentiationFormatter(self.left, self.right).string_format()
     
     def simplify(self):
-        return ExponentiationSimplifier(self.left, self.right).simplify()
+        return Simplifiers.ExponentiationSimplifier(self.left, self.right).simplify()
 
     def diff(self):
-        return ExponentiationDifferentiator(self.left, self.right).diff()
+        return Differentiators.ExponentiationDifferentiator(self.left, self.right).diff()
 
 built_in_functions = [Sin, Cos, Tan, Asin, Acos, Atan, Exp, Ln]
