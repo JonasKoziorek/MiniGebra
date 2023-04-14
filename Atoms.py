@@ -57,15 +57,7 @@ class BinaryOperator(Atom):
 
 class Division(BinaryOperator):
     def __repr__(self):
-        left = self.left ; right = self.right
-        bracket_types = [Plus, Minus, Division, Exponentiation]
-        if type(left) in bracket_types:
-            left = f"({self.left})"
-
-        if type(right) in bracket_types:
-            right = f"({self.right})"
-
-        return f"{left} / {right}"
+        return DivisionFormatter(self.left, self.right).string_format()
 
     def diff(self):
         return (self.left.diff() * self.right - self.left * self.right.diff()) / (self.right ** Number(2))
@@ -75,22 +67,7 @@ class Division(BinaryOperator):
 
 class Multiplication(BinaryOperator):
     def __repr__(self):
-        left = self.left ; right = self.right
-        bracket_types = [Plus, Minus, Exponentiation, Division]
-        neglect_types = [Number, Function, Variable]
-        if type(left) in neglect_types and type(right) == Variable:
-            return f"{self.left}{self.right}"
-
-        if type(left) == Number and type(right) == Number:
-            return f"{left} * {right}"
-
-        if type(left) in bracket_types:
-            left = f"({left})"
-
-        if type(right) in bracket_types:
-            right = f"({right})"
-
-        return f"{left}{right}"
+        return MultiplicationFormatter(self.left, self.right).string_format()
 
     def diff(self):
         return self.left.diff() * self.right + self.left * self.right.diff()
@@ -100,7 +77,7 @@ class Multiplication(BinaryOperator):
 
 class Plus(BinaryOperator):
     def __repr__(self):
-        return f"{self.left} + {self.right}"
+        return PlusFormatter(self.left, self.right).string_format()
 
     def diff(self):
         return self.left.diff() + self.right.diff()
@@ -110,7 +87,7 @@ class Plus(BinaryOperator):
 
 class Minus(BinaryOperator):
     def __repr__(self):
-        return f"{self.left} - {self.right}"
+        return MinusFormatter(self.left, self.right).string_format()
 
     def diff(self):
         return self.left.diff() - self.right.diff()
