@@ -31,13 +31,18 @@ while True:
             I.feed(expressions)
             print("Expressions:")
             I.print()
-            I.simplify_expr()
-            print("Simplification:")
-            I.print()
-            print("Derivatives:")
-            I.diff()
-            I.simplify_expr()
-            I.print()
+            # I.simplify()
+            # print("Simplification:")
+            # I.print()
+            # print("Derivatives:")
+            # I.diff()
+            # I.simplify()
+            # I.print()
+            answer = input("Plot?")
+            if answer == "y":
+                I.plot((-10,10))
+            else:
+                continue
         except Exception as e:
             print(e)
         print("")

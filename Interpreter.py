@@ -1,4 +1,6 @@
 from Atoms import Function, BinaryOperator
+import matplotlib.pyplot as plt
+import numpy as np
 
 class Interpreter:
 
@@ -55,15 +57,38 @@ class Interpreter:
         else:
             return expr
 
-    def diff(self):
+    def diff(self) -> list:
         self.expressions = [expr.diff() for expr in self.expressions]
 
-    def simplify_expr(self):
+    def simplify(self) -> list:
         self.expressions = [self.__simplify_internal(expr) for expr in self.expressions]
+
+    def eval(self, dict: dict) -> list:
+        self.expressions = [expr.eval(dict) for expr in self.expressions]
+
+    def plot(self, interval):
+        expr = self.expressions[0]
+        a,b = interval
+        precision = 1000
+        x = np.linspace(a,b,precision)
+        y = np.array([expr.eval({"x": i}) for i in x])
+
+        figure, axis = plt.subplots(1, 2)
+        
+        axis[0].plot(x, y)
+        axis[0].set_title("Function")
+        
+        self.diff()
+        expr = self.expressions[0]
+        y = np.array([expr.eval({"x": i}) for i in x])
+        axis[1].plot(x, y)
+        axis[1].set_title("Function derivative")
+        
+        plt.show()
 
     def __simplify_internal(self, expr):
         simplified = expr.simplify()
         while str(simplified) != str(expr):
            expr = simplified 
-           simplified = expr.simplify_expr()
+           simplified = expr.simplify()
         return simplified

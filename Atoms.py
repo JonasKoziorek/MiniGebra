@@ -60,6 +60,13 @@ class Atom:
     def to_list(self):
         return [self]
 
+    def eval(dict: dict) -> float:
+        pass
+
+    def __call__(self, *args):
+        return self.eval(*args)
+
+
 class BinaryOperator(Atom):
     def __init__(self, left, right):
         super().__init__()
@@ -96,19 +103,24 @@ class BinaryOperator(Atom):
         return self._to_ast(list_, type(self))
 
 class Div(BinaryOperator):
-    pass
+    def eval(self, dict: dict):
+        return self.left.eval(dict) / self.right.eval(dict)
 
 class Mul(BinaryOperator):
-    pass
+    def eval(self, dict: dict):
+        return self.left.eval(dict) * self.right.eval(dict)
 
 class Plus(BinaryOperator):
-    pass
+    def eval(self, dict: dict):
+        return self.left.eval(dict) + self.right.eval(dict)
 
 class Minus(BinaryOperator):
-    pass
+    def eval(self, dict: dict):
+        return self.left.eval(dict) - self.right.eval(dict)
 
 class Expon(BinaryOperator):
-    pass
+    def eval(self, dict: dict):
+        return self.left.eval(dict) ** self.right.eval(dict)
 
 class Number(Atom):
     def __init__(self, value):
@@ -127,10 +139,19 @@ class Number(Atom):
         else:
             return False
 
+    def eval(self, dict: dict):
+        return self.num
+
 class Variable(Atom):
     def __init__(self, value):
         self.value = value
         self.init_args = (self.value, self)
+
+    def eval(self, dict: dict):
+        try:
+            return dict[self.value]
+        except:
+            raise Exception(f"Variable {self.value} has no value specified.")
 
 class Function(Atom):
     def __init__(self, name, args, func = None):
@@ -141,6 +162,10 @@ class Function(Atom):
             self.args = args
         self.func = func
         self.init_args = (self.name, self.args, self)
+
+    def eval(self, dict: dict):
+        args = tuple([a.eval(dict) for a in self.args])
+        return self.func(*args)
 
 class Sin(Function):
     name = "sin"
