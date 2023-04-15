@@ -1,12 +1,38 @@
 import Atoms as Atoms
 
-class Binary:
-    def __init__(self, left, right, parent):
-        self.left = left
-        self.right = right
+class Atom:
+    def __init__(self, parent):
         self.parent = parent
 
-class Div(Binary):
+    def string_format(self):
+        return "atom"
+
+class Variable(Atom):
+    def __init__(self, value, parent):
+        super().__init__(parent)
+        self.value = value
+
+    def string_format(self):
+        return f"{self.value}"
+
+class Number(Atom):
+    def __init__(self, value, parent):
+        super().__init__(parent)
+        self.value = value
+
+    def string_format(self):
+        return f"{self.value}"
+
+class BinaryOperator(Atom):
+    def __init__(self, left, right, parent):
+        super().__init__(parent)
+        self.left = left
+        self.right = right
+
+    def string_format(self):
+        return f"operator({self.left},{self.right})"
+
+class Div(BinaryOperator):
     def __init__(self, left, right, parent):
         super().__init__(left, right, parent)
     
@@ -21,7 +47,7 @@ class Div(Binary):
 
         return f"{left} / {right}"
 
-class Mul(Binary):
+class Mul(BinaryOperator):
     def __init__(self, left, right, parent):
         super().__init__(left, right, parent)
     
@@ -51,21 +77,21 @@ class Mul(Binary):
 
         return f"{left}{right}"
 
-class Plus(Binary):
+class Plus(BinaryOperator):
     def __init__(self, left, right, parent):
         super().__init__(left, right, parent)
     
     def string_format(self):
         return f"{self.left} + {self.right}"
 
-class Minus(Binary):
+class Minus(BinaryOperator):
     def __init__(self, left, right, parent):
         super().__init__(left, right, parent)
     
     def string_format(self):
         return f"{self.left} - {self.right}"
 
-class Expon(Binary):
+class Expon(BinaryOperator):
     def __init__(self, left, right, parent):
         super().__init__(left, right, parent)
     
@@ -80,13 +106,45 @@ class Expon(Binary):
 
         return f"{left} ^ {right}"
 
-class Function:
+class Function(Atom):
     def __init__(self, name, args, parent):
+        super().__init__(parent)
         self.name = name
         self.args = args
-        self.parent = parent
 
     def string_format(self):
         string = str(self.args[0])
         string = string + "".join([f", {str(arg)}" for arg in self.args[1:]])
         return f"{self.name}({string})"
+
+class Sin(Function):
+    def __init__(self, name, args, parent):
+        super().__init__(name, args, parent)
+
+class Cos(Function):
+    def __init__(self, name, args, parent):
+        super().__init__(name, args, parent)
+
+class Tan(Function):
+    def __init__(self, name, args, parent):
+        super().__init__(name, args, parent)
+
+class Asin(Function):
+    def __init__(self, name, args, parent):
+        super().__init__(name, args, parent)
+
+class Acos(Function):
+    def __init__(self, name, args, parent):
+        super().__init__(name, args, parent)
+
+class Atan(Function):
+    def __init__(self, name, args, parent):
+        super().__init__(name, args, parent)
+
+class Exp(Function):
+    def __init__(self, name, args, parent):
+        super().__init__(name, args, parent)
+
+class Ln(Function):
+    def __init__(self, name, args, parent):
+        super().__init__(name, args, parent)

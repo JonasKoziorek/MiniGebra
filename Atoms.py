@@ -5,10 +5,9 @@ import Simplifiers as Simplifiers
 import Formatters as Formatters
 import Differentiators as Differentiators
 
-
 class Atom:
     def __init__(self):
-        pass
+        self.init_args = ()
 
     def __add__(self, other):
         return Plus(self, other)
@@ -25,32 +24,48 @@ class Atom:
     def __pow__(self, other):
         return Expon(self, other)
 
-    def simplify_expr(self):
-        return self
-
-    def diff(self):
-        return self
-
-    def simplify_expr(self):
-        return self
-
-    def simplify_list(self):
-        return self
+    def get_simplifier(self):
+        name = self.__class__.__name__
+        func = eval(f"Simplifiers.{name}")
+        return func(*self.init_args)
 
     def simplify(self):
-        return self.simplify_expr().simplify_list()
+        return self.get_simplifier().simplify()
+
+    def simplify_expr(self):
+        return self.get_simplifier().simplify_expr()
+
+    def simplify_list(self):
+        return self.get_simplifier().simplify_list()
+
+    def get_differentiator(self):
+        name = self.__class__.__name__
+        func = eval(f"Differentiators.{name}")
+        return func(*self.init_args)
+
+    def diff(self):
+        return self.get_differentiator().diff()
+
+    def get_formatter(self):
+        name = self.__class__.__name__
+        func =  eval(f"Formatters.{name}")
+        return func(*self.init_args)
+
+    def __repr__(self):
+        return self.get_formatter().string_format()
+
+    def to_ast(self, list_):
+        return list_[0]
+
+    def to_list(self):
+        return [self]
 
 class BinaryOperator(Atom):
     def __init__(self, left, right):
         super().__init__()
         self.left = left
         self.right = right
-
-    def diff(self):
-        return self
-
-    def __repr__(self):
-        return f"operator({self.left},{self.right})"
+        self.init_args = (self.left, self.right, self)
 
     def _to_list(self, operation):
         a=[]; b=[]
@@ -81,70 +96,28 @@ class BinaryOperator(Atom):
         return self._to_ast(list_, type(self))
 
 class Div(BinaryOperator):
-    def __repr__(self):
-        return Formatters.Div(self.left, self.right, self).string_format()
-
-    def diff(self):
-        return Differentiators.Div(self.left, self.right, self).diff()
-
-    def simplify_expr(self):
-        return Simplifiers.Div(self.left, self.right, self).simplify_expr()
-
-    def simplify_list(self):
-        return Simplifiers.Div(self.left, self.right, self).simplify_list()
+    pass
 
 class Mul(BinaryOperator):
-    def __repr__(self):
-        return Formatters.Mul(self.left, self.right, self).string_format()
-
-    def diff(self):
-        return Differentiators.Mul(self.left, self.right, self).diff()
-
-    def simplify_expr(self):
-        return Simplifiers.Mul(self.left, self.right, self).simplify_expr()
-
-    def simplify_list(self):
-        return Simplifiers.Mul(self.left, self.right, self).simplify_list()
+    pass
 
 class Plus(BinaryOperator):
-    def __repr__(self):
-        return Formatters.Plus(self.left, self.right, self).string_format()
-
-    def diff(self):
-        return Differentiators.Plus(self.left, self.right, self).diff()
-
-    def simplify_expr(self):
-        return Simplifiers.Plus(self.left, self.right, self).simplify_expr()
-
-    def simplify_list(self):
-        return Simplifiers.Plus(self.left, self.right, self).simplify_list()
+    pass
 
 class Minus(BinaryOperator):
-    def __repr__(self):
-        return Formatters.Minus(self.left, self.right, self).string_format()
+    pass
 
-    def diff(self):
-        return Differentiators.Minus(self.left, self.right, self).diff()
-
-    def simplify_expr(self):
-        return Simplifiers.Minus(self.left, self.right, self).simplify_expr()
-
-    def simplify_list(self):
-        return Simplifiers.Minus(self.left, self.right, self).simplify_list()
+class Expon(BinaryOperator):
+    pass
 
 class Number(Atom):
     def __init__(self, value):
         self.value = str(value)
         self.num = self.convert()
+        self.init_args = (self.value, self)
 
     def convert(self):
         return ast.literal_eval(self.value)
-
-    def diff(self):
-        return Number(0)
-
-    def __repr__(self):
-        return f"{self.value}"
 
     def __eq__(self, other):
         if isinstance(other, Number):
@@ -157,13 +130,7 @@ class Number(Atom):
 class Variable(Atom):
     def __init__(self, value):
         self.value = value
-
-    def diff(self):
-        return Number(1)
-
-    def __repr__(self):
-        return f"{self.value}"
-
+        self.init_args = (self.value, self)
 
 class Function(Atom):
     def __init__(self, name, args, func = None):
@@ -173,40 +140,22 @@ class Function(Atom):
         else:
             self.args = args
         self.func = func
-
-    def simplify_expr(self):
-        return Simplifiers.Function(self.name, self.args, self).simplify_expr()
-
-    def __repr__(self):
-        return Formatters.Function(self.name, self.args, self).string_format()
-
-    def diff(self):
-        return Differentiators.Function(self.name, self.args, self).diff()
-        
+        self.init_args = (self.name, self.args, self)
 
 class Sin(Function):
     name = "sin"
     def __init__(self, args):
         super().__init__(self.name, args, np.sin)
 
-    def diff(self):
-        return Differentiators.Sin(self.name, self.args, self).diff()
-
 class Cos(Function):
     name = "cos"
     def __init__(self, args):
         super().__init__(self.name, args, np.cos)
 
-    def diff(self):
-        return Differentiators.Cos(self.name, self.args, self).diff()
-
 class Tan(Function):
     name = "tan"
     def __init__(self, args):
         super().__init__(self.name, args, np.tan)
-
-    def diff(self):
-        return Differentiators.Tan(self.name, self.args, self).diff()
 
 class Asin(Function):
     name = "asin"
@@ -228,32 +177,9 @@ class Exp(Function):
     def __init__(self, args):
         super().__init__(self.name, args, np.exp)
 
-    def diff(self):
-        return Differentiators.Exp(self.name, self.args, self).diff()
-    
-    def simplify_expr(self):
-        return Simplifiers.Exp(self.name, self.args, self).simplify_expr()
-
 class Ln(Function):
     name = "ln"
     def __init__(self, args):
         super().__init__(self.name, args, np.log)
-
-    def diff(self):
-        return Differentiators.Ln(self.name, self.args, self).diff()
-
-
-    def simplify_expr(self):
-        return Simplifiers.Ln(self.name, self.args, self).simplify_expr()
-
-class Expon(BinaryOperator):
-    def __repr__(self):
-        return Formatters.Expon(self.left, self.right, self).string_format()
-    
-    def simplify_expr(self):
-        return Simplifiers.Expon(self.left, self.right, self).simplify_expr()
-
-    def diff(self):
-        return Differentiators.Expon(self.left, self.right, self).diff()
 
 built_in_functions = [Sin, Cos, Tan, Asin, Acos, Atan, Exp, Ln]
