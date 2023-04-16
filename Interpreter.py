@@ -43,7 +43,7 @@ class Interpreter:
         self.names = self.names.append(func.name)
 
     def rename_funcs(self):
-        self.expressions = [self.rename_func(expr) for expr in self.expressions]
+        self.expressions = [[self.rename_func(expr) for expr in elem] for elem in self.expressions]
 
     def rename_func(self, expr):
         if isinstance(expr, Function):
@@ -77,7 +77,7 @@ class Interpreter:
         self.expressions = [[expr.eval(dict) for expr in elem] for elem in self.expressions]
 
     def plot(self, interval):
-        expr = self.expressions[0]
+        expr = self.expressions[0][0]
         a,b = interval
         precision = 1000
         x = np.linspace(a,b,precision)
@@ -86,6 +86,14 @@ class Interpreter:
         axis.plot(x, y)
         axis.set_title("Function")
         plt.show()
+
+    def generate_data(self, interval: tuple, precision: float = 0.01):
+        expr = self.expressions[0][0]
+        a,b = interval
+        num = int(np.abs(b-a)/precision)
+        x = np.linspace(a,b,num)
+        y = np.array([expr.eval({"x": i}) for i in x])
+        return x,y
 
     def __simplify_internal(self, expr):
         simplified = expr.simplify()

@@ -9,17 +9,9 @@ class Preprocessor:
         exprs = list(filter(lambda x: x not in commands, exprs))
         return commands, exprs
 
-        return self.split_to_exprs()
-        # expr = expr.replace("+", " + ")
-        # expr = expr.replace("-", " - ")
-        # expr = expr.replace("*", " * ")
-        # expr = expr.replace("/", " / ")
-        # expr = expr.replace("^", " ^ ")
-        # return expr
-
     def split_to_exprs(self):
         # different expressions are separated by character ;
-        return self.input.split(";")
+        return [string.strip() for string in self.input.split(";")]
 
     def check_for_commands(self, expr):
         if expr[0] == '"' and expr[-1] == '"':
