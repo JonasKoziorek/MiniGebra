@@ -13,11 +13,15 @@ class Interpreter:
         self.names = [el.name for el in self.functions]
 
     def feed(self, expressions):
-        self.expressions = expressions
+        self.expressions = [expressions]
         self.rename_funcs()
 
     def print(self):
-        print(self.expressions)
+        print("Expressions:")
+        print(self.expressions[:1])
+        for rank, diff in enumerate(self.expressions[1:]):
+            print(f"Differentiations of order {rank+1}")
+            print(diff)
 
     def fprint(self):
         # full print, prints more information
@@ -57,14 +61,20 @@ class Interpreter:
         else:
             return expr
 
-    def diff(self) -> list:
-        self.expressions = [expr.diff() for expr in self.expressions]
+    def diff(self, number = 1) -> list:
+        expr = self.expressions[0]
+        self.expressions=[expr]
+
+        for i in range(number):
+            expr = [i.diff() for i in expr]
+            self.expressions.append(expr)
+
 
     def simplify(self) -> list:
-        self.expressions = [self.__simplify_internal(expr) for expr in self.expressions]
+        self.expressions = [[self.__simplify_internal(expr) for expr in elem] for elem in self.expressions]
 
     def eval(self, dict: dict) -> list:
-        self.expressions = [expr.eval(dict) for expr in self.expressions]
+        self.expressions = [[expr.eval(dict) for expr in elem] for elem in self.expressions]
 
     def plot(self, interval):
         expr = self.expressions[0]
@@ -72,18 +82,9 @@ class Interpreter:
         precision = 1000
         x = np.linspace(a,b,precision)
         y = np.array([expr.eval({"x": i}) for i in x])
-
-        figure, axis = plt.subplots(1, 2)
-        
-        axis[0].plot(x, y)
-        axis[0].set_title("Function")
-        
-        self.diff()
-        expr = self.expressions[0]
-        y = np.array([expr.eval({"x": i}) for i in x])
-        axis[1].plot(x, y)
-        axis[1].set_title("Function derivative")
-        
+        figure, axis = plt.subplots()
+        axis.plot(x, y)
+        axis.set_title("Function")
         plt.show()
 
     def __simplify_internal(self, expr):

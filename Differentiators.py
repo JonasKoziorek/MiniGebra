@@ -8,21 +8,21 @@ class Atom:
     def diff(self):
         return self.parent
 
-class Variable(Atom):
+class Var(Atom):
     def __init__(self,value, parent):
         super().__init__(parent)
         self.value = value
 
     def diff(self):
-        return Atoms.Number(1)
+        return Atoms.Num(1)
 
-class Number(Atom):
+class Num(Atom):
     def __init__(self,value, parent):
         super().__init__(parent)
         self.value = value
 
     def diff(self):
-        return Atoms.Number(0)
+        return Atoms.Num(0)
 
 class BinaryOperator(Atom):
     def __init__(self, left, right, parent):
@@ -35,7 +35,7 @@ class Div(BinaryOperator):
         super().__init__(left, right, parent)
 
     def diff(self):
-        return (self.left.diff() * self.right - self.left * self.right.diff()) / (self.right ** Atoms.Number(2))
+        return (self.left.diff() * self.right - self.left * self.right.diff()) / (self.right ** 2)
 
 class Mul(BinaryOperator):
     def __init__(self, left, right, parent):
@@ -98,7 +98,7 @@ class Cos(Function):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Atoms.Number(-1) * Atoms.Sin([arg]) * arg.diff()
+            return Atoms.Num(-1) * Atoms.Sin([arg]) * arg.diff()
         else:
             self._error_message()
 
@@ -109,7 +109,7 @@ class Tan(Function):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Atoms.Number(1) / (Atoms.Cos(self.args)*Atoms.Cos(self.args)) * arg.diff()
+            return Atoms.Num(1) / (Atoms.Cos(self.args)*Atoms.Cos(self.args)) * arg.diff()
         else:
             self._error_message()
 
@@ -155,6 +155,6 @@ class Ln(Function):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Atoms.Number(1) / arg * arg.diff()
+            return Atoms.Num(1) / arg * arg.diff()
         else:
             self._error_message()

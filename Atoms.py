@@ -10,19 +10,19 @@ class Atom:
         self.init_args = ()
 
     def __add__(self, other):
-        return Plus(self, other)
+        return self.__work_with_numbers(Plus, other)
     
     def __sub__(self, other):
-        return Minus(self, other)
+        return self.__work_with_numbers(Minus, other)
     
     def __mul__(self, other):
-        return Mul(self, other)
+        return self.__work_with_numbers(Mul, other)
 
     def __truediv__(self, other):
-        return Div(self, other)
+        return self.__work_with_numbers(Div, other)
 
     def __pow__(self, other):
-        return Expon(self, other)
+        return self.__work_with_numbers(Expon, other)
 
     def get_simplifier(self):
         name = self.__class__.__name__
@@ -65,6 +65,12 @@ class Atom:
 
     def __call__(self, *args):
         return self.eval(*args)
+
+    def __work_with_numbers(self, operation, other):
+        if type(other) == int or type(other) == float:
+            return operation(self, Num(other))
+        else:
+            return operation(self, other)
 
 
 class BinaryOperator(Atom):
@@ -122,7 +128,7 @@ class Expon(BinaryOperator):
     def eval(self, dict: dict):
         return self.left.eval(dict) ** self.right.eval(dict)
 
-class Number(Atom):
+class Num(Atom):
     def __init__(self, value):
         self.value = str(value)
         self.num = self.convert()
@@ -132,17 +138,41 @@ class Number(Atom):
         return ast.literal_eval(self.value)
 
     def __eq__(self, other):
-        if isinstance(other, Number):
+        if isinstance(other, Num):
             return self.value == other.value
         elif isinstance(other, int) or isinstance(other, float):
             return self.num == other
         else:
             return False
 
+    def __add__(self, other):
+        if type(other) == Num:
+            return Num(self.num+other.num)
+        else:
+            return super().__add__(other)
+    
+    def __sub__(self, other):
+        if type(other) == Num:
+            return Num(self.num-other.num)
+        else:
+            return super().__sub__(other)
+    
+    def __mul__(self, other):
+        if type(other) == Num:
+            return Num(self.num*other.num)
+        else:
+            return super().__mul__(other)
+
+    def __pow__(self, other):
+        if type(other) == Num:
+            return Num(self.num**other.num)
+        else:
+            return super().__pow__(other)
+
     def eval(self, dict: dict):
         return self.num
 
-class Variable(Atom):
+class Var(Atom):
     def __init__(self, value):
         self.value = value
         self.init_args = (self.value, self)
@@ -151,7 +181,7 @@ class Variable(Atom):
         try:
             return dict[self.value]
         except:
-            raise Exception(f"Variable {self.value} has no value specified.")
+            raise Exception(f"Var {self.value} has no value specified.")
 
 class Function(Atom):
     def __init__(self, name, args, func = None):

@@ -7,7 +7,7 @@ class Atom:
     def string_format(self):
         return "atom"
 
-class Variable(Atom):
+class Var(Atom):
     def __init__(self, value, parent):
         super().__init__(parent)
         self.value = value
@@ -15,7 +15,7 @@ class Variable(Atom):
     def string_format(self):
         return f"{self.value}"
 
-class Number(Atom):
+class Num(Atom):
     def __init__(self, value, parent):
         super().__init__(parent)
         self.value = value
@@ -54,17 +54,17 @@ class Mul(BinaryOperator):
     def string_format(self):
         left = self.left ; right = self.right
         bracket_types = [Atoms.Plus, Atoms.Minus, Atoms.Expon, Atoms.Div]
-        neglect_types = [Atoms.Function, Atoms.Variable, Atoms.Number, *Atoms.built_in_functions]
-        if type(left) == Atoms.Number and type(right) == Atoms.Number:
+        neglect_types = [Atoms.Function, Atoms.Var, Atoms.Num, *Atoms.built_in_functions]
+        if type(left) == Atoms.Num and type(right) == Atoms.Num:
             if left.num < 0:
                 return f"({left} * {right})"
             else:
                 return f"{left} * {right}"
 
         if type(left) in neglect_types and type(right) in neglect_types:
-            if type(left) == Atoms.Number and left.num < 0:
+            if type(left) == Atoms.Num and left.num < 0:
                 return f"({self.left}{self.right})"
-            elif type(right) == Atoms.Number and right.num < 0:
+            elif type(right) == Atoms.Num and right.num < 0:
                 return f"({self.right}{self.left})"
             else:
                 return f"{self.left}{self.right}"

@@ -29,20 +29,11 @@ while True:
         try:
             I = Interpreter(built_in_functions)
             I.feed(expressions)
-            print("Expressions:")
+            I.diff(2)
+            I.simplify()
             I.print()
-            # I.simplify()
-            # print("Simplification:")
-            # I.print()
-            # print("Derivatives:")
-            # I.diff()
-            # I.simplify()
-            # I.print()
-            answer = input("Plot?")
-            if answer == "y":
-                I.plot((-10,10))
-            else:
-                continue
+            # I.plot((-10,10))
         except Exception as e:
             print(e)
+            pass
         print("")

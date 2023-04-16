@@ -1,4 +1,4 @@
-from Atoms import Mul, Expon, Div, Plus, Minus, Variable, Function, Number
+from Atoms import Mul, Expon, Div, Plus, Minus, Var, Function, Num
 from Commands import valid_names, valid_commands, Command
 from Errors import ParseError
 
@@ -104,7 +104,7 @@ class Parser:
                 args.append(self.expression())
 
             self.advance()
-            if type(left) == Variable:
+            if type(left) == Var:
                 return Function(left.value, args )
             else:
                 raise Exception("Incorret function expression.")
@@ -125,11 +125,11 @@ class Parser:
                     args.append(self.expression())
 
                 self.advance()
-                name = Variable(tok["token"]).value
+                name = Var(tok["token"]).value
                 return Function(name, args )
             
             else:
-                return Variable(tok["token"])
+                return Var(tok["token"])
 
         elif self.isToken(['LPAR']):
             self.advance()
@@ -140,7 +140,7 @@ class Parser:
 
         elif self.isToken(['NUMBER']):
             self.advance()
-            return Number(tok["token"])
+            return Num(tok["token"])
 
         elif self.isToken(['COMMAND']):
             expr = self.current["token"]
