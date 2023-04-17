@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-from main import compile_
 import numpy as np
 
 class Input(QWidget):
@@ -27,5 +26,6 @@ class Input(QWidget):
     def compile_input_(self):
         text =self.text()
         if text:
-            self.parsed_text.emit(*compile_(text))
+            # self.parsed_text.emit(*compile_(text))
+            pass
         
