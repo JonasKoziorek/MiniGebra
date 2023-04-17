@@ -3,7 +3,7 @@ from PyQt5.QtCore import *
 import numpy as np
 
 class Input(QWidget):
-    parsed_text = pyqtSignal(np.ndarray, np.ndarray)
+    parsed_text = pyqtSignal(list)
 
     def __init__(self, name):
         super().__init__()
@@ -15,17 +15,8 @@ class Input(QWidget):
         layout.addWidget(self.edit)
         self.setLayout(layout)
 
-        self.editingFinished(self.compile_input_)
-
     def editingFinished(self, func) -> None:
         self.edit.editingFinished.connect(func)
     
     def text(self) -> str:
         return self.edit.text()
-
-    def compile_input_(self):
-        text =self.text()
-        if text:
-            # self.parsed_text.emit(*compile_(text))
-            pass
-        

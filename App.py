@@ -16,8 +16,8 @@ sys.excepthook = __my_exception_hook
 # -----
 
 if __name__ == '__main__':
-    # type = "GUI"
-    type = "CLI"
+    type = "GUI"
+    # type = "CLI"
     if type == "GUI":
         app = QApplication(sys.argv)
         # show available font families

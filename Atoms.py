@@ -181,7 +181,7 @@ class Var(Atom):
         try:
             return dict[self.value]
         except:
-            raise Exception(f"Var {self.value} has no value specified.")
+            raise Exception(f"Var {self.value} has no specified value.")
 
 class Function(Atom):
     def __init__(self, name, args, func = None):
