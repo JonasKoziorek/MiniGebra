@@ -7,7 +7,6 @@ import numpy as np
 
 class PlotData:
     def __init__(self, expr, vars, domain: tuple[int] = (-10,10), precision:float = 0.01):
-        self.name = str(expr)
         self.expr = expr
         self.domain = domain
         self.precision = precision
@@ -72,12 +71,16 @@ class Canvas(QWidget):
             i+=1
         return (factor-i,factor)
 
-    def montage(self, datasets: list[list], names=[]):
+    def montage(self, datasets: list, names=[]):
         x, y  = self.compute_grid_size(len(datasets))
         self.new_grid(x,y)
         for i, axis in enumerate(self.axes.flatten()):
-            axis.plot(*datasets[i].generate())
-            axis.set_title(datasets[i].name, fontsize=30)
+            try:
+                x,y = datasets[i].generate()
+                axis.plot(x,y)
+                axis.set_title(datasets[i].expr.print("MathJax1"), fontsize=30)
+            except IndexError:
+                pass
         self.refresh()
 
     def refresh(self):

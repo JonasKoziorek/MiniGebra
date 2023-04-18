@@ -72,6 +72,14 @@ class Atom:
         else:
             return operation(self, other)
 
+    def print(self, option:str):
+        if option == "MathJax1":
+            return self.get_formatter().mathjax_format1()
+        elif option == "mathjax2":
+            return self.get_formatter().mathjax_format2()
+        elif option == "latex":
+            return self.get_formatter().latex_format()
+
 
 class BinaryOperator(Atom):
     def __init__(self, left, right):

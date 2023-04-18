@@ -25,8 +25,10 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
         self.show()
 
-    def invoke_plot(self):
-        text = self.sidebar.input.text()
-        data = self.interpreter.interpret_text(text, diff_order=0)
-        data = sum(data, [])
-        self.canvas.montage(data)
+    def invoke_plot(self, text):
+        if text:
+            try:
+                data = self.interpreter.interpret_text(text, diff_order=1)
+                self.canvas.montage(data)
+            except:
+                pass
