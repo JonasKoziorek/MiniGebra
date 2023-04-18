@@ -108,8 +108,8 @@ class Interpreter:
     #     return results
 
     def generate_data(self, domain: tuple = (-10,10), precision: float = 0.01):
-        # return [[PlotData(expr, self.variables, domain, precision) for expr in elem] for elem in self.expressions]
-        return [PlotData(expr, self.variables, domain, precision) for elem in self.expressions for expr in elem]
+        return [[PlotData(expr, self.variables, domain, precision) for expr in elem] for elem in self.expressions]
+        # return [PlotData(expr, self.variables, domain, precision) for elem in self.expressions for expr in elem]
 
     # def generate_data(self, **kwargs):
     #     return [[self.generate_data_for_expr(expr, **kwargs) for expr in elem] for elem in self.expressions]

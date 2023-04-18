@@ -30,5 +30,6 @@ class MainWindow(QMainWindow):
             try:
                 data = self.interpreter.interpret_text(text, diff_order=1)
                 self.canvas.montage(data)
+                self.sidebar.board.rewrite(data)
             except:
                 pass

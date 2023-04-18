@@ -73,7 +73,7 @@ class Atom:
             return operation(self, other)
 
     def print(self, option:str):
-        if option == "MathJax1":
+        if option == "mathjax1":
             return self.get_formatter().mathjax_format1()
         elif option == "mathjax2":
             return self.get_formatter().mathjax_format2()

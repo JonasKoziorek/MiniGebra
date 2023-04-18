@@ -1,3 +1,4 @@
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QFont
 import sys

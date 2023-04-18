@@ -10,7 +10,7 @@ class TextEdit(QTextEdit):
         self.textChanged.connect(self.on_text_changed)
 
         self.timer = QTimer(self)
-        self.timer.setInterval(500)
+        self.timer.setInterval(1000)
         self.timer.timeout.connect(self.editingFinished)
 
     def on_text_changed(self):

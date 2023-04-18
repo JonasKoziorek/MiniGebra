@@ -4,6 +4,9 @@ matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 import numpy as np
+import matplotlib.pyplot as plt
+colors = plt.rcParams["axes.prop_cycle"]()
+plt.rcParams["figure.autolayout"] = True
 
 class PlotData:
     def __init__(self, expr, vars, domain: tuple[int] = (-10,10), precision:float = 0.01):
@@ -71,14 +74,16 @@ class Canvas(QWidget):
             i+=1
         return (factor-i,factor)
 
-    def montage(self, datasets: list, names=[]):
+    def montage(self, datasets: list[list]):
+        datasets = [item for sub_list in datasets for item in sub_list]
         x, y  = self.compute_grid_size(len(datasets))
         self.new_grid(x,y)
         for i, axis in enumerate(self.axes.flatten()):
             try:
                 x,y = datasets[i].generate()
-                axis.plot(x,y)
-                axis.set_title(datasets[i].expr.print("MathJax1"), fontsize=30)
+                c = next(colors)["color"]
+                axis.plot(x,y, linewidth = 5, color = c)
+                axis.set_title(datasets[i].expr.print("mathjax1"), fontsize=30)
             except IndexError:
                 pass
         self.refresh()
