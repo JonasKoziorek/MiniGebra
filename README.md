@@ -1,5 +1,6 @@
 ## MiniGebra
 Small clone of GeoGebra.
+![plot](high_res_logo.png)
 
 ## Aim of the project
 This clone will consist of simple graphical user interface written in PyQt5.

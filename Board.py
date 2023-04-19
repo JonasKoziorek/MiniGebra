@@ -13,7 +13,9 @@ class Board(QWebEngineView):
         doc = dominate.document()
         with doc.head:
             script(src="https://polyfill.io/v3/polyfill.min.js?features=es6")
-            script(src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML")
+            script(type="text/javascript", id="MathJax-script",src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js")
+            link(rel="stylesheet", href="https://www.w3schools.com/w3css/4/w3.css")
+            style(".MathJax {font-size: 1.5em !important;}")
         return doc
 
     def rewrite(self, data=[]):
@@ -31,16 +33,16 @@ class Board(QWebEngineView):
 
     @div(h3("Parameters:"))
     def parameters(self):
-        p("None", align="center")
+        p("$$None$$", align="center")
 
     @div(h3("Variables:"))
     def variables(self):
-        p(r"x", align="center")
+        p("$$x$$", align="center")
 
     @div(h3("Commands:"))
     def commands(self):
         h5("Domain:")
-        p("(-10,10)", align="center")
+        p("$$(-10,10)$$", align="center")
 
     @div(h3("Expressions:"))
     def expressions(self, exprs):

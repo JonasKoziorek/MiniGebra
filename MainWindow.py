@@ -1,19 +1,21 @@
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
 from Canvas import Canvas 
 from Sidebar import Sidebar
 import cv2 as cv
 from Interpreter import Interpreter
-from Atoms import built_in_functions
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.setWindowTitle("MiniGebra")
+        self.setWindowIcon(QIcon('icon.png'))
         self.setGeometry(0,0, 500, 500)
         self.showMaximized()
 
         self.canvas = Canvas()
         self.sidebar = Sidebar()
-        self.interpreter = Interpreter(built_in_functions)
+        self.interpreter = Interpreter()
         self.sidebar.input.editingFinished(self.invoke_plot)
 
         widget = QWidget()
@@ -25,11 +27,16 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
         self.show()
 
-    def invoke_plot(self, text):
-        if text:
+    def invoke_plot(self, text: str) -> None:
+        if text == "":
+            self.canvas.reset_axes()
+            self.canvas.create_grid_axes()
+            self.canvas.clear_axes()
+            self.canvas.canvas.draw()
+        elif text:
             try:
-                data = self.interpreter.interpret_text(text, diff_order=1)
+                commands, data = self.interpreter.interpret_text(text, diff_order=1)
                 self.canvas.montage(data)
                 self.sidebar.board.rewrite(data)
-            except:
-                pass
+            except Exception as e:
+                print(e)

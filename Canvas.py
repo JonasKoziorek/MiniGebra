@@ -30,6 +30,7 @@ class Canvas(QWidget):
         self.dpi = dpi
         self.fig = Figure(dpi=self.dpi)
         self.create_grid_axes()
+        self.clear_axes()
         self.canvas = FigureCanvasQTAgg(self.fig)
         self.toolbar = NavigationToolbar(self.canvas, None)
 
@@ -45,6 +46,10 @@ class Canvas(QWidget):
             self.axes = np.array([axes]).reshape(1,1)
         else:
             self.axes = axes
+
+    def clear_axes(self):
+        [axis.clear() for axis in self.axes.flatten()]
+        [axis.axis("off") for axis in self.axes.flatten()]
 
     def reset_axes(self):
         [self.fig.delaxes(ax) for ax in self.axes.flatten()]
@@ -85,7 +90,8 @@ class Canvas(QWidget):
                 axis.plot(x,y, linewidth = 5, color = c)
                 axis.set_title(datasets[i].expr.print("mathjax1"), fontsize=30)
             except IndexError:
-                pass
+                axis.clear()
+                axis.axis("off")
         self.refresh()
 
     def refresh(self):

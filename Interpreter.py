@@ -8,15 +8,16 @@ from Errors import *
 from PyQt5.QtWidgets import QApplication
 import sys
 from Canvas import Canvas, PlotData
+from Database import Database
 
 class Interpreter:
 
-    def __init__(self, built_in_functions=[]):
+    def __init__(self):
         self.expressions = []
         self.variables = ["x"]
         # self.parameters = {}
 
-        self.functions = built_in_functions
+        self.functions = Database.built_in_functions
         self.names = [el.name for el in self.functions]
 
     def set_build_in_functions(self, functions):
@@ -44,21 +45,6 @@ class Interpreter:
     def print(self, padding=1):
         self.print_expressions(padding=padding)
         self.print_derivations(padding=padding)
-
-    # def fprint(self):
-    #     # full print, prints more information
-    #     print("".join([self.__fprint_expr(expr) for expr in self.expressions]))
-
-    # def __fprint_expr(self, expression, increment = 0):
-    #     string = "" 
-    #     if isinstance(expression, BinaryOperator):
-    #         string += "\n" + "\t"*increment + expression.__class__.__name__
-    #         string += self.__fprint_expr(expression.left, increment + 1)
-    #         string += self.__fprint_expr(expression.right, increment + 1)
-    #     else:
-    #         string += "\n" + "\t"*increment + str(expression)
-
-    #     return string
 
     def add_func(self, func: tuple[str, Function]):
         self.functions.append(func)
@@ -95,31 +81,9 @@ class Interpreter:
     def simplify(self) -> list:
         self.expressions = [[self.__simplify_internal(expr) for expr in elem] for elem in self.expressions]
 
-    # def eval(self, dict: dict) -> list:
-    #     self.expressions = [[expr.eval(dict) for expr in elem] for elem in self.expressions]
-
-    # def generate_data(self, domain: tuple = (-10,10), precision: float = 0.01):
-    #     results = []
-    #     for elem in self.expressions:
-    #         sub_results = []
-    #         for expr in elem:
-    #             sub_results.append(PlotData(expr, self.variables, domain, precision))
-    #         results.append(sub_results)
-    #     return results
-
     def generate_data(self, domain: tuple = (-10,10), precision: float = 0.01):
         return [[PlotData(expr, self.variables, domain, precision) for expr in elem] for elem in self.expressions]
         # return [PlotData(expr, self.variables, domain, precision) for elem in self.expressions for expr in elem]
-
-    # def generate_data(self, **kwargs):
-    #     return [[self.generate_data_for_expr(expr, **kwargs) for expr in elem] for elem in self.expressions]
-
-    # def generate_data_for_expr(self, expr, interval: tuple = (-10,10), precision: float = 0.01):
-    #     a,b = interval
-    #     num = int(np.abs(b-a)/precision)
-    #     x = np.linspace(a,b,num)
-    #     y = np.array([expr.eval({"x": i}) for i in x])
-    #     return (x,y)
 
     def __simplify_internal(self, expr):
         simplified = expr.simplify()
@@ -179,4 +143,4 @@ class Interpreter:
     def interpret_text(self, input, domain=(-10,10),precision=0.01, diff_order=1):
         commands, expressions = self.compile(input)
         self.interpret_exprs(expressions, diff_order=diff_order)
-        return self.generate_data(domain, precision)
+        return commands, self.generate_data(domain, precision)
