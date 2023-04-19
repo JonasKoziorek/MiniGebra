@@ -1,9 +1,9 @@
-from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QFont
 import sys
 from MainWindow import MainWindow
 from Interpreter import Interpreter
+from Database import Database
 
 # tohle je potreba aby se mi spravne ukazovaly errory
 # -----
@@ -28,7 +28,7 @@ if __name__ == '__main__':
         sys.exit(app.exec_())
 
     elif type == "CLI":
-        I = Interpreter()
+        I = Interpreter(database=Database())
         I.interpreter_loop(plot=True, diff_order=1, padding=2)
 
     else:

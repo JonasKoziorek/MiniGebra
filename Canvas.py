@@ -14,8 +14,6 @@ class PlotData:
         self.domain = domain
         self.precision = precision
         self.vars = vars
-        if len(self.vars) > 1:
-            raise Exception("Currently, only one variable functions are supported.")
 
     def generate(self):
         a,b = self.domain
@@ -81,18 +79,19 @@ class Canvas(QWidget):
 
     def montage(self, datasets: list[list]):
         datasets = [item for sub_list in datasets for item in sub_list]
-        x, y  = self.compute_grid_size(len(datasets))
-        self.new_grid(x,y)
-        for i, axis in enumerate(self.axes.flatten()):
-            try:
-                x,y = datasets[i].generate()
-                c = next(colors)["color"]
-                axis.plot(x,y, linewidth = 5, color = c)
-                axis.set_title(datasets[i].expr.print("mathjax1"), fontsize=30)
-            except IndexError:
-                axis.clear()
-                axis.axis("off")
-        self.refresh()
+        if len(datasets) > 0:
+            x, y  = self.compute_grid_size(len(datasets))
+            self.new_grid(x,y)
+            for i, axis in enumerate(self.axes.flatten()):
+                try:
+                    x,y = datasets[i].generate()
+                    c = next(colors)["color"]
+                    axis.plot(x,y, linewidth = 5, color = c)
+                    axis.set_title(datasets[i].expr.print("mathjax1"), fontsize=30)
+                except IndexError:
+                    axis.clear()
+                    axis.axis("off")
+            self.refresh()
 
     def refresh(self):
         self.canvas.draw()

@@ -5,5 +5,9 @@ class Database:
     built_in_functions = Atoms.built_in_functions
     def __init__(self):
         self.expressions = []
-        self.variables = []
-        self.parameters = []
+        self.variables = ["x"]
+        self.parameters = ["a"]
+        self.domain = (-10,10)
+        self.diff_order = 1
+        self.precision = 0.01
+        self.plot_data = []

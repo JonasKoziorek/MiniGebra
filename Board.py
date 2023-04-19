@@ -1,12 +1,13 @@
 import dominate
 from dominate.tags import *
 from PyQt5.QtWebEngineWidgets import QWebEngineView
+from Database import Database
 
 class Board(QWebEngineView):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.doc = self.new_doc()
-        self.rewrite()
+        self.rewrite(Database())
         self.setHtml(str(self.doc))
 
     def new_doc(self):
@@ -18,31 +19,26 @@ class Board(QWebEngineView):
             style(".MathJax {font-size: 1.5em !important;}")
         return doc
 
-    def rewrite(self, data=[]):
+    def rewrite(self, database: Database):
+        data = database.plot_data
         self.doc = self.new_doc()
         with self.doc:
-            self.commands()
-            self.variables()
-            self.parameters()
-            if len(data)> 0:
+            self.attribute("Variables:", "".join([i + ", " for i in database.variables])[:-2])
+            self.attribute("Parameters:", "".join([i + ", " for i in database.parameters])[:-2])
+            self.attribute("Order of differentiation:", database.diff_order)
+            self.attribute("Domain:", database.domain)
+            self.attribute("Precision:", database.precision)
+            if len(data)> 0 and len(data[0]) > 0:
                 self.expressions(data[0])
                 if len(data) > 1:
                     for i in range(1,len(data)):
                         self.derivations(i, data[i])
         self.setHtml(str(self.doc))
 
-    @div(h3("Parameters:"))
-    def parameters(self):
-        p("$$None$$", align="center")
-
-    @div(h3("Variables:"))
-    def variables(self):
-        p("$$x$$", align="center")
-
-    @div(h3("Commands:"))
-    def commands(self):
-        h5("Domain:")
-        p("$$(-10,10)$$", align="center")
+    @div
+    def attribute(self, name, text):
+        h3(name)
+        p(f"$${text}$$", align="center")
 
     @div(h3("Expressions:"))
     def expressions(self, exprs):

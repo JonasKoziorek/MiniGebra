@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from Canvas import Canvas 
 from Sidebar import Sidebar
-import cv2 as cv
 from Interpreter import Interpreter
+from Database import Database
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -15,8 +15,9 @@ class MainWindow(QMainWindow):
 
         self.canvas = Canvas()
         self.sidebar = Sidebar()
-        self.interpreter = Interpreter()
-        self.sidebar.input.editingFinished(self.invoke_plot)
+        self.database = Database()
+        self.interpreter = Interpreter(self.database)
+        self.sidebar.input.editingFinished(self.process_input)
 
         widget = QWidget()
         layout = QHBoxLayout()
@@ -27,7 +28,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
         self.show()
 
-    def invoke_plot(self, text: str) -> None:
+    def process_input(self, text: str) -> None:
         if text == "":
             self.canvas.reset_axes()
             self.canvas.create_grid_axes()
@@ -35,8 +36,9 @@ class MainWindow(QMainWindow):
             self.canvas.canvas.draw()
         elif text:
             try:
-                commands, data = self.interpreter.interpret_text(text, diff_order=1)
-                self.canvas.montage(data)
-                self.sidebar.board.rewrite(data)
+                self.interpreter.interpret_text(text)
+                self.interpreter.generate_data()
+                self.canvas.montage(self.database.plot_data)
+                self.sidebar.board.rewrite(self.database)
             except Exception as e:
                 print(e)

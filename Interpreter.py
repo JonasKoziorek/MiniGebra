@@ -9,33 +9,32 @@ from PyQt5.QtWidgets import QApplication
 import sys
 from Canvas import Canvas, PlotData
 from Database import Database
+from Commands import Command
 
 class Interpreter:
 
-    def __init__(self):
-        self.expressions = []
-        self.variables = ["x"]
-        # self.parameters = {}
-
-        self.functions = Database.built_in_functions
+    def __init__(self, database: Database):
+        self.database = database
+        self.database.expressions = self.database.expressions
+        self.functions = self.database.built_in_functions
         self.names = [el.name for el in self.functions]
 
     def set_build_in_functions(self, functions):
         self.functions = functions
 
     def feed(self, expressions):
-        self.expressions = [expressions]
+        self.database.expressions = [expressions]
         self.rename_funcs()
 
     def print_expressions(self, padding=1):
         print("Expressions:")
         pad = "\t" * padding
-        expressions = self.expressions[0]
+        expressions = self.database.expressions[0]
         for expr in expressions:
             print(pad+str(expr))
 
     def print_derivations(self, padding=1):
-        derivations = self.expressions[1:]
+        derivations = self.database.expressions[1:]
         pad = "\t" * padding
         for rank, diffs in enumerate(derivations):
             print(f"Differentiations of order {rank+1}:")
@@ -51,7 +50,7 @@ class Interpreter:
         self.names = self.names.append(func.name)
 
     def rename_funcs(self):
-        self.expressions = [[self.rename_func(expr) for expr in elem] for elem in self.expressions]
+        self.database.expressions = [[self.rename_func(expr) for expr in elem] for elem in self.database.expressions]
 
     def rename_func(self, expr):
         if isinstance(expr, Function):
@@ -70,20 +69,20 @@ class Interpreter:
             return expr
 
     def diff(self, diff_order = 1) -> list:
-        expr = self.expressions[0]
-        self.expressions=[expr]
+        expr = self.database.expressions[0]
+        self.database.expressions=[expr]
 
         for i in range(diff_order):
             expr = [i.diff() for i in expr]
-            self.expressions.append(expr)
+            self.database.expressions.append(expr)
 
 
     def simplify(self) -> list:
-        self.expressions = [[self.__simplify_internal(expr) for expr in elem] for elem in self.expressions]
+        self.database.expressions = [[self.__simplify_internal(expr) for expr in elem] for elem in self.database.expressions]
 
-    def generate_data(self, domain: tuple = (-10,10), precision: float = 0.01):
-        return [[PlotData(expr, self.variables, domain, precision) for expr in elem] for elem in self.expressions]
-        # return [PlotData(expr, self.variables, domain, precision) for elem in self.expressions for expr in elem]
+    def generate_data(self):
+        self.database.plot_data = [[PlotData(expr, self.database.variables, self.database.domain, self.database.precision) for expr in elem] for elem in self.database.expressions]
+        # return [PlotData(expr, self.variables, domain, precision) for elem in self.database.expressions for expr in elem]
 
     def __simplify_internal(self, expr):
         simplified = expr.simplify()
@@ -112,12 +111,26 @@ class Interpreter:
             print(pad+str(command))
         print("")
 
-    def interpret_exprs(self, exprs: list[Atom], diff_order=1):
+    def interpret_exprs(self, exprs: list[Atom]):
         self.feed(exprs)
-        self.diff(diff_order)
+        self.diff(self.database.diff_order)
         self.simplify()
 
-    def interpreter_loop(self, plot=False, domain=(-10,10), precision=0.1, diff_order=1, padding=1):
+    def interpret_commands(self, commands: list[Command]):
+        for command in commands:
+            name = command.name
+            if name == "vars":
+                self.database.variables = command.params
+            elif name == "params":
+                self.database.parameters = command.params
+            elif name == "domain":
+                self.database.domain = (command.params[0], command.params[1])
+            elif name == "precision":
+                self.database.precision = float(command.params[0])
+            elif name == "diff_order":
+                self.database.diff_order = int(command.params[0])
+        
+    def interpreter_loop(self, plot=False, padding=1):
         while True:
             text = input("MiniGebra> ")
             commands, expressions = self.compile(text)
@@ -126,13 +139,13 @@ class Interpreter:
 
             if expressions:
                 try:
-                    self.interpret_exprs(expressions, diff_order=diff_order)
+                    self.interpret_exprs(expressions)
                     self.print(padding=padding)
                     if plot:
-                        data = self.generate_data(domain=domain, precision=precision)
+                        self.generate_data()
                         app = QApplication(sys.argv)
                         c = Canvas()
-                        c.montage(data)
+                        c.montage(self.database.data)
                         c.show()
                         sys.exit(app.exec_())
 
@@ -140,7 +153,7 @@ class Interpreter:
                     print(e)
                 print("")
 
-    def interpret_text(self, input, domain=(-10,10),precision=0.01, diff_order=1):
+    def interpret_text(self, input):
         commands, expressions = self.compile(input)
-        self.interpret_exprs(expressions, diff_order=diff_order)
-        return commands, self.generate_data(domain, precision)
+        self.interpret_exprs(expressions)
+        self.interpret_commands(commands)

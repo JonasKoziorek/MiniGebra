@@ -6,15 +6,14 @@ class Command:
     # params: comma separated words/letters => a, b, abd
     def __init__(self, text: str):
         self.text = text
-
-    def simplify_expr(self):
-        return self
-
-    def diff(self):
-        return self
+        self.params = self.parse_params(text)
 
     def __repr__(self):
         return f"{self.name}: {self.text}"
+
+    def parse_params(self, text):
+        return text.strip().split(",")
+
 
 class Domain(Command):
     name = "domain"
@@ -31,5 +30,15 @@ class Params(Command):
     def __init__(self, text:str):
         super().__init__(text)
 
-valid_commands = [Domain, Vars, Params]
+class DiffOrder(Command):
+    name = "diff_order"
+    def __init__(self, text:str):
+        super().__init__(text)
+
+class Precision(Command):
+    name = "precision"
+    def __init__(self, text:str):
+        super().__init__(text)
+
+valid_commands = [Domain, Vars, Params, DiffOrder, Precision]
 valid_names = [i.name for i in valid_commands]
