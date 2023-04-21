@@ -1,5 +1,8 @@
-import Atoms as Atoms
-from Errors import DifferentiationError
+from . import atoms as atoms
+
+class DifferentiationError(Exception):
+    "Raised when an error occurs while differentiating."
+    pass
 
 class Atom:
     def __init__(self, parent):
@@ -14,7 +17,7 @@ class Var(Atom):
         self.value = value
 
     def diff(self):
-        return Atoms.Num(1)
+        return atoms.Num(1)
 
 class Num(Atom):
     def __init__(self,value, parent):
@@ -22,7 +25,7 @@ class Num(Atom):
         self.value = value
 
     def diff(self):
-        return Atoms.Num(0)
+        return atoms.Num(0)
 
 class BinaryOperator(Atom):
     def __init__(self, left, right, parent):
@@ -63,7 +66,7 @@ class Expon(BinaryOperator):
         super().__init__(left, right, parent)
 
     def diff(self):
-        return Atoms.Exp([self.right * Atoms.Ln([self.left])]).diff()
+        return atoms.Exp([self.right * atoms.Ln([self.left])]).diff()
 
 class Function(Atom):
     def __init__(self,name, args, parent):
@@ -87,7 +90,7 @@ class Sin(Function):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Atoms.Cos([arg]) * arg.diff()
+            return atoms.Cos([arg]) * arg.diff()
         else:
             self._error_message()
 
@@ -98,7 +101,7 @@ class Cos(Function):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Atoms.Num(-1) * Atoms.Sin([arg]) * arg.diff()
+            return atoms.Num(-1) * atoms.Sin([arg]) * arg.diff()
         else:
             self._error_message()
 
@@ -109,7 +112,7 @@ class Tan(Function):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Atoms.Num(1) / (Atoms.Cos(self.args)*Atoms.Cos(self.args)) * arg.diff()
+            return atoms.Num(1) / (atoms.Cos(self.args)*atoms.Cos(self.args)) * arg.diff()
         else:
             self._error_message()
 
@@ -144,7 +147,7 @@ class Exp(Function):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Atoms.Exp(arg) * arg.diff()
+            return atoms.Exp(arg) * arg.diff()
         else:
             self._error_message()
 
@@ -155,6 +158,6 @@ class Ln(Function):
     def diff(self):
         if len(self.args) == 1:
             arg = self.args[0]
-            return Atoms.Num(1) / arg * arg.diff()
+            return atoms.Num(1) / arg * arg.diff()
         else:
             self._error_message()

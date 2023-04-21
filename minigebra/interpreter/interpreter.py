@@ -1,19 +1,18 @@
-from Atoms import Function, BinaryOperator, Atom
-import numpy as np
-from Tokenizer import tokens, Tokenizer
-from Parser import Parser
-from Preprocessor import Preprocessor
-from Errors import *
-
 from PyQt5.QtWidgets import QApplication
 import sys
-from Canvas import Canvas, PlotData
-from Database import Database
-from Commands import Command
+
+from .atoms import Function, BinaryOperator, Atom
+from .tokenizer import tokens, Tokenizer
+from .parser import Parser
+from .preprocessor import Preprocessor
+from .database import Database
+from .commands import Command
+
+from ..gui.canvas import Canvas, PlotData
 
 class Interpreter:
 
-    def __init__(self, database: Database):
+    def __init__(self, database: Database = Database()):
         self.database = database
         self.database.expressions = self.database.expressions
         self.functions = self.database.built_in_functions

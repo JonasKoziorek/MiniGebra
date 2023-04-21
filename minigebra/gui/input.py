@@ -1,6 +1,5 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-import numpy as np
+from PyQt5.QtWidgets import QTextEdit, QWidget, QLabel, QVBoxLayout
+from PyQt5.QtCore import pyqtSignal, QTimer
 
 class TextEdit(QTextEdit):
     edit_finished = pyqtSignal(str)

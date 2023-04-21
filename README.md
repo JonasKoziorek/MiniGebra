@@ -1,9 +1,10 @@
 ## MiniGebra
 Small clone of GeoGebra. Work In Progress.
-![plot](logo.png)
+![plot](/images/logo.png)
 
 ## Aim of the project
 This clone will consist of simple graphical user interface for plotting mathematical functions. This project was created for class Scientific Computing in Python at VSB-TUO.
+
 
 # Implemented features
 
@@ -13,6 +14,8 @@ This clone will consist of simple graphical user interface for plotting mathemat
 * plotting of expressions/functions
 * saving figures
 * GUI
+
+![plot](/images/screenshot.png)
 
 # Features that might be implemented in future
 

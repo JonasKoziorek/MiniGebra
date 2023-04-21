@@ -1,4 +1,4 @@
-import Atoms as Atoms
+from . import atoms as atoms
 
 class Atom:
     def __init__(self, parent):
@@ -54,7 +54,7 @@ class Div(BinaryOperator):
         return r"\frac{" + str(left) + "}{" + str(right) + "}"
 
     def __correct_bracket(self, left, right):
-        bracket_types = [Atoms.Plus, Atoms.Minus, Atoms.Div, Atoms.Expon]
+        bracket_types = [atoms.Plus, atoms.Minus, atoms.Div, atoms.Expon]
         if type(self.left) in bracket_types:
             left = f"({left})"
 
@@ -72,18 +72,18 @@ class Mul(BinaryOperator):
     def string_format(self):
         left = self.left ; right = self.right
         left = self.left ; right = self.right
-        bracket_types = [Atoms.Plus, Atoms.Minus, Atoms.Expon, Atoms.Div]
-        neglect_types = [Atoms.Function, Atoms.Var, Atoms.Num, *Atoms.built_in_functions]
-        if type(left) == Atoms.Num and type(right) == Atoms.Num:
+        bracket_types = [atoms.Plus, atoms.Minus, atoms.Expon, atoms.Div]
+        neglect_types = [atoms.Function, atoms.Var, atoms.Num, *atoms.BUILT_IN_FUNCTIONS]
+        if type(left) == atoms.Num and type(right) == atoms.Num:
             if left.num < 0:
                 return f"({left} * {right})"
             else:
                 return f"{left} * {right}"
 
         if type(left) in neglect_types and type(right) in neglect_types:
-            if type(left) == Atoms.Num and left.num < 0:
+            if type(left) == atoms.Num and left.num < 0:
                 return f"({self.left}{self.right})"
-            elif type(right) == Atoms.Num and right.num < 0:
+            elif type(right) == atoms.Num and right.num < 0:
                 return f"({self.right}{self.left})"
             else:
                 return f"{self.left}{self.right}"
@@ -98,18 +98,18 @@ class Mul(BinaryOperator):
 
     def latex_format(self):
         left = self.left.print("latex") ; right = self.right.print("latex")
-        bracket_types = [Atoms.Plus, Atoms.Minus, Atoms.Expon, Atoms.Div]
-        neglect_types = [Atoms.Function, Atoms.Var, Atoms.Num, *Atoms.built_in_functions]
-        if type(self.left) == Atoms.Num and type(self.right) == Atoms.Num:
+        bracket_types = [atoms.Plus, atoms.Minus, atoms.Expon, atoms.Div]
+        neglect_types = [atoms.Function, atoms.Var, atoms.Num, *atoms.BUILT_IN_FUNCTIONS]
+        if type(self.left) == atoms.Num and type(self.right) == atoms.Num:
             if self.left.num < 0:
                 return f"({left}"+ r" \cdot " +  f"{right})"
             else:
                 return f"{left}"+ r" \cdot " +  f"{right}"
 
         if type(self.left) in neglect_types and type(self.right) in neglect_types:
-            if type(self.left) == Atoms.Num and self.left.num < 0:
+            if type(self.left) == atoms.Num and self.left.num < 0:
                 return f"({left}{right})"
-            elif type(self.right) == Atoms.Num and self.right.num < 0:
+            elif type(self.right) == atoms.Num and self.right.num < 0:
                 return f"({right}{left})"
             else:
                 return f"{left}{right}"
@@ -150,10 +150,10 @@ class Expon(BinaryOperator):
     def string_format(self):
         left = str(self.left)
         right = str(self.right)
-        if isinstance(self.right, Atoms.BinaryOperator):
+        if isinstance(self.right, atoms.BinaryOperator):
             right = f"({self.right})"
 
-        if isinstance(self.left, Atoms.BinaryOperator):
+        if isinstance(self.left, atoms.BinaryOperator):
             left = f"({self.left})"
 
         return f"{left} ^ {right}"
@@ -161,10 +161,10 @@ class Expon(BinaryOperator):
     def latex_format(self):
         left = self.left.print('latex')
         right = self.right.print('latex')
-        if isinstance(self.right, Atoms.BinaryOperator):
+        if isinstance(self.right, atoms.BinaryOperator):
             right = f"({self.right})"
 
-        if isinstance(self.left, Atoms.BinaryOperator):
+        if isinstance(self.left, atoms.BinaryOperator):
             left = f"({self.left})"
 
         return f"{left}" +  r"^{" f"{right}" + "}"
@@ -179,14 +179,10 @@ class Function(Atom):
         return f"{self.name}({self.__string_args_format()})"
 
     def __string_args_format(self):
-        string = str(self.args[0])
-        string = string + "".join([f", {str(arg)}" for arg in self.args[1:]])
-        return string
+        return "".join([f", {str(arg)}" for arg in self.args])
 
     def _latex_args_format(self):
-        string = self.args[0].print('latex')
-        string = string + "".join([f", {arg.print('latex')}" for arg in self.args[1:]])
-        return string
+        return "".join([f", {arg.print('latex')}" for arg in self.args])
 
 class Sin(Function):
     def __init__(self, name, args, parent):

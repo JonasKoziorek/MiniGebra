@@ -1,15 +1,17 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from Canvas import Canvas 
-from Sidebar import Sidebar
-from Interpreter import Interpreter
-from Database import Database
+from PyQt5.QtWidgets import QMainWindow, QWidget, QHBoxLayout
+from PyQt5.QtGui import QIcon
+
+from .canvas import Canvas 
+from .sidebar import Sidebar
+
+from ..interpreter import Database
+from ..interpreter import Interpreter
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setWindowTitle("MiniGebra")
-        self.setWindowIcon(QIcon('icon.png'))
+        self.setWindowIcon(QIcon('../images/icon.png'))
         self.setGeometry(0,0, 500, 500)
         self.showMaximized()
 

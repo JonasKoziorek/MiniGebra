@@ -1,9 +1,9 @@
 import ast
 import numpy as np
 
-import Simplifiers as Simplifiers
-import Formatters as Formatters
-import Differentiators as Differentiators
+from . import simplifiers as simplifiers
+from . import formatters as formatters
+from . import differentiators as differentiators
 
 class Atom:
     def __init__(self):
@@ -26,7 +26,7 @@ class Atom:
 
     def get_simplifier(self):
         name = self.__class__.__name__
-        func = eval(f"Simplifiers.{name}")
+        func = eval(f"simplifiers.{name}")
         return func(*self.init_args)
 
     def simplify(self):
@@ -40,7 +40,7 @@ class Atom:
 
     def get_differentiator(self):
         name = self.__class__.__name__
-        func = eval(f"Differentiators.{name}")
+        func = eval(f"differentiators.{name}")
         return func(*self.init_args)
 
     def diff(self):
@@ -48,7 +48,7 @@ class Atom:
 
     def get_formatter(self):
         name = self.__class__.__name__
-        func =  eval(f"Formatters.{name}")
+        func =  eval(f"formatters.{name}")
         return func(*self.init_args)
 
     def __repr__(self):
@@ -245,4 +245,4 @@ class Ln(Function):
     def __init__(self, args):
         super().__init__(self.name, args, np.log)
 
-built_in_functions = [Sin, Cos, Tan, Asin, Acos, Atan, Exp, Ln]
+BUILT_IN_FUNCTIONS = [Sin, Cos, Tan, Asin, Acos, Atan, Exp, Ln]

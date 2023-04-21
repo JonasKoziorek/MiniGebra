@@ -1,6 +1,9 @@
-from Atoms import Mul, Expon, Div, Plus, Minus, Var, Function, Num
-from Commands import valid_names, valid_commands, Command
-from Errors import ParseError
+from .atoms import Mul, Expon, Div, Plus, Minus, Var, Function, Num
+from .commands import VALID_NAMES, VALID_COMMANDS, Command
+
+class ParseError(Exception):
+    "Raised when an error occurs while parsing."
+    pass
 
 class Parser:
 
@@ -22,12 +25,12 @@ class Parser:
         if len(tokens) == 2:
             name = tokens[0]
             body = tokens[1]
-            if name in valid_names:
-                ind = valid_names.index(name)
-                type_ = valid_commands[ind]
+            if name in VALID_NAMES:
+                ind = VALID_NAMES.index(name)
+                type_ = VALID_COMMANDS[ind]
                 return type_(body)
             else:
-                raise Exception(f"Unknown command {command}.\nAvailable commands are {valid_names}")
+                raise Exception(f"Unknown command {command}.\nAvailable commands are {VALID_NAMES}")
         else:
             raise ParseError(f"Command {command} is not valid.")
     

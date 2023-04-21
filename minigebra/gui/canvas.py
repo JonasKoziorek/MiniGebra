@@ -1,12 +1,15 @@
-from PyQt5.QtWidgets import *
 import matplotlib
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
-import numpy as np
+
 import matplotlib.pyplot as plt
 colors = plt.rcParams["axes.prop_cycle"]()
 plt.rcParams["figure.autolayout"] = True
+
+from PyQt5.QtWidgets import QVBoxLayout, QWidget
+
+import numpy as np
 
 class PlotData:
     def __init__(self, expr, vars, domain: tuple[int] = (-10,10), precision:float = 0.01):

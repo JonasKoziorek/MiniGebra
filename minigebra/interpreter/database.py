@@ -1,8 +1,8 @@
-import Atoms
+from .atoms import BUILT_IN_FUNCTIONS
 
 # important data used by many sub parts of the program will be held here
 class Database:
-    built_in_functions = Atoms.built_in_functions
+    built_in_functions = BUILT_IN_FUNCTIONS
     def __init__(self):
         self.expressions = []
         self.variables = ["x"]

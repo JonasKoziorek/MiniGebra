@@ -40,5 +40,5 @@ class Precision(Command):
     def __init__(self, text:str):
         super().__init__(text)
 
-valid_commands = [Domain, Vars, Params, DiffOrder, Precision]
-valid_names = [i.name for i in valid_commands]
+VALID_COMMANDS = [Domain, Vars, Params, DiffOrder, Precision]
+VALID_NAMES = [i.name for i in VALID_COMMANDS]

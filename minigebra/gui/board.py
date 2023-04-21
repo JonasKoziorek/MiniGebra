@@ -1,7 +1,8 @@
 import dominate
-from dominate.tags import *
+from dominate.tags import script, link, style, div, h3, p
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from Database import Database
+
+from ..interpreter.database import Database
 
 class Board(QWebEngineView):
     def __init__(self, parent=None):
