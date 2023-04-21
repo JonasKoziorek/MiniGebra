@@ -7,6 +7,9 @@ from .interpreter import Interpreter
 
 
 def run(type: str) -> None:
+    """
+    Runs the application in either GUI or CLI version. Specify type as type="GUI" for graphical user interface or type="CLI" for command line version.
+    """
     if type == "GUI":
         app = QApplication(sys.argv)
         font = QFont("Arimo for Powerline", 13)

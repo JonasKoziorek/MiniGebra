@@ -11,4 +11,3 @@ Supported functionalities include:
 """
 
 from .interpreter import Interpreter
-from .database import Database

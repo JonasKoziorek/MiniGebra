@@ -12,8 +12,8 @@ from ..gui.canvas import Canvas, PlotData
 
 class Interpreter:
 
-    def __init__(self, database: Database = Database()):
-        self.database = database
+    def __init__(self):
+        self.database = Database()
         self.database.expressions = self.database.expressions
         self.functions = self.database.built_in_functions
         self.names = [el.name for el in self.functions]

@@ -4,7 +4,6 @@ from PyQt5.QtGui import QIcon
 from .canvas import Canvas 
 from .sidebar import Sidebar
 
-from ..interpreter import Database
 from ..interpreter import Interpreter
 
 class MainWindow(QMainWindow):
@@ -17,8 +16,7 @@ class MainWindow(QMainWindow):
 
         self.canvas = Canvas()
         self.sidebar = Sidebar()
-        self.database = Database()
-        self.interpreter = Interpreter(self.database)
+        self.interpreter = Interpreter()
         self.sidebar.input.editingFinished(self.process_input)
 
         widget = QWidget()
@@ -40,7 +38,7 @@ class MainWindow(QMainWindow):
             try:
                 self.interpreter.interpret_text(text)
                 self.interpreter.generate_data()
-                self.canvas.montage(self.database.plot_data)
-                self.sidebar.board.rewrite(self.database)
+                self.canvas.montage(self.interpreter.database.plot_data)
+                self.sidebar.board.rewrite(self.interpreter.database)
             except Exception as e:
                 print(e)
