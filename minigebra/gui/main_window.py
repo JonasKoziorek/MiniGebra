@@ -11,7 +11,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setWindowTitle("MiniGebra")
-        self.setWindowIcon(QIcon('../images/icon.png'))
+        self.setWindowIcon(QIcon('images/icon.png'))
         self.setGeometry(0,0, 500, 500)
         self.showMaximized()
 

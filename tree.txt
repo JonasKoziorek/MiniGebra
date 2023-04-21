@@ -1,0 +1,40 @@
+.
+├── README.md
+├── example_usage.ipynb
+├── images
+│   ├── icon.png
+│   ├── logo.png
+│   └── screenshot.png
+├── minigebra
+│   ├── __init__.py
+│   ├── gui
+│   │   ├── __init__.py
+│   │   ├── board.py
+│   │   ├── canvas.py
+│   │   ├── input.py
+│   │   ├── main_window.py
+│   │   └── sidebar.py
+│   ├── interpreter
+│   │   ├── __init__.py
+│   │   ├── atoms
+│   │   │   ├── __init__.py
+│   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.cpython-39.pyc
+│   │   │   │   ├── atoms.cpython-39.pyc
+│   │   │   │   ├── differentiators.cpython-39.pyc
+│   │   │   │   ├── formatters.cpython-39.pyc
+│   │   │   │   └── simplifiers.cpython-39.pyc
+│   │   │   ├── atoms.py
+│   │   │   ├── differentiators.py
+│   │   │   ├── formatters.py
+│   │   │   └── simplifiers.py
+│   │   ├── commands.py
+│   │   ├── database.py
+│   │   ├── interpreter.py
+│   │   ├── parser.py
+│   │   ├── preprocessor.py
+│   │   └── tokenizer.py
+│   └── main.py
+└── tree.txt
+
+6 directories, 31 files

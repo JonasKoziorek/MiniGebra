@@ -3,7 +3,7 @@ Small clone of GeoGebra. Work In Progress.
 ![plot](/images/logo.png)
 
 ## Aim of the project
-This clone will consist of simple graphical user interface for plotting mathematical functions. This project was created for class Scientific Computing in Python at VSB-TUO.
+This clone will consist of simple graphical user interface for plotting mathematical functions. This project was created for class Scientific calculations in Python at VSB-TUO (information about the class can be currently seen here: https://www.vsb.cz/e-vyuka/en/subject/470-2701/02).
 
 
 # Implemented features
@@ -27,3 +27,29 @@ This clone will consist of simple graphical user interface for plotting mathemat
 * complex funtions
 * parameters and their animations
 
+# Current project structure
+
+├── minigebra
+│   ├── __init__.py
+│   ├── gui
+│   │   ├── __init__.py
+│   │   ├── board.py
+│   │   ├── canvas.py
+│   │   ├── input.py
+│   │   ├── main_window.py
+│   │   └── sidebar.py
+│   ├── interpreter
+│   │   ├── __init__.py
+│   │   ├── atoms
+│   │   │   ├── __init__.py
+│   │   │   ├── atoms.py
+│   │   │   ├── differentiators.py
+│   │   │   ├── formatters.py
+│   │   │   └── simplifiers.py
+│   │   ├── commands.py
+│   │   ├── database.py
+│   │   ├── interpreter.py
+│   │   ├── parser.py
+│   │   ├── preprocessor.py
+│   │   └── tokenizer.py
+│   └── main.py
