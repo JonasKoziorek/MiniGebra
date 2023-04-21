@@ -6,7 +6,11 @@ from .sidebar import Sidebar
 
 from ..interpreter import Interpreter
 
+
 class MainWindow(QMainWindow):
+    """
+    Main widget of the gui.
+    """
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setWindowTitle("MiniGebra")

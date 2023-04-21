@@ -1,7 +1,6 @@
 from .atoms import BUILT_IN_FUNCTIONS
 
 # for type hints
-from ..gui.canvas import PlotData
 from .atoms import Atom, Function
 
 class Database:
@@ -16,4 +15,4 @@ class Database:
         self.domain: tuple[int] = (-10,10)
         self.diff_order: int = 1
         self.precision: float = 0.01
-        self.plot_data: list[list[PlotData]] = []
+        self.plot_data = []
