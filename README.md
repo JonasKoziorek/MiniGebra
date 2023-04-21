@@ -29,27 +29,27 @@ This clone will consist of simple graphical user interface for plotting mathemat
 
 # Current project structure
 
-├── minigebra
-│   ├── __init__.py
-│   ├── gui
-│   │   ├── __init__.py
-│   │   ├── board.py
-│   │   ├── canvas.py
-│   │   ├── input.py
-│   │   ├── main_window.py
-│   │   └── sidebar.py
-│   ├── interpreter
-│   │   ├── __init__.py
-│   │   ├── atoms
-│   │   │   ├── __init__.py
-│   │   │   ├── atoms.py
-│   │   │   ├── differentiators.py
-│   │   │   ├── formatters.py
-│   │   │   └── simplifiers.py
-│   │   ├── commands.py
-│   │   ├── database.py
-│   │   ├── interpreter.py
-│   │   ├── parser.py
-│   │   ├── preprocessor.py
-│   │   └── tokenizer.py
-│   └── main.py
+    ├── minigebra
+    │   ├── __init__.py
+    │   ├── gui
+    │   │   ├── __init__.py
+    │   │   ├── board.py
+    │   │   ├── canvas.py
+    │   │   ├── input.py
+    │   │   ├── main_window.py
+    │   │   └── sidebar.py
+    │   ├── interpreter
+    │   │   ├── __init__.py
+    │   │   ├── atoms
+    │   │   │   ├── __init__.py
+    │   │   │   ├── atoms.py
+    │   │   │   ├── differentiators.py
+    │   │   │   ├── formatters.py
+    │   │   │   └── simplifiers.py
+    │   │   ├── commands.py
+    │   │   ├── database.py
+    │   │   ├── interpreter.py
+    │   │   ├── parser.py
+    │   │   ├── preprocessor.py
+    │   │   └── tokenizer.py
+    │   └── main.py
