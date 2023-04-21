@@ -17,6 +17,8 @@ This clone will consist of simple graphical user interface for plotting mathemat
 
 ![plot](/images/screenshot.png)
 
+Since I have no time to continue this project, it is halted for now. Current version contains bugs and unfinished work.
+
 # Features that might be implemented in future
 
 * plotting options

@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication
 import sys
 
 from .atoms import Function, BinaryOperator, Atom
-from .tokenizer import tokens, Tokenizer
+from .tokenizer import Tokenizer
 from .parser import Parser
 from .preprocessor import Preprocessor
 from .database import Database
@@ -93,7 +93,7 @@ class Interpreter:
     def compile(self, input):
         try:
             commands, exprs = Preprocessor(input).preprocess()
-            t = Tokenizer(tokens)
+            t = Tokenizer()
             p = Parser(t)
             commands = [p.parse_command(comm) for comm in commands]
             expressions = [p.parse_expr(expr) for expr in exprs]

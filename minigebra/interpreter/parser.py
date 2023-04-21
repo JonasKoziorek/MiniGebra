@@ -1,5 +1,8 @@
-from .atoms import Mul, Expon, Div, Plus, Minus, Var, Function, Num
+from .atoms import Mul, Expon, Div, Plus, Minus, Var, Function, Num, Atom
 from .commands import VALID_NAMES, VALID_COMMANDS, Command
+
+# for type hinting
+from .tokenizer import Tokenizer
 
 class ParseError(Exception):
     "Raised when an error occurs while parsing."
@@ -7,11 +10,14 @@ class ParseError(Exception):
 
 class Parser:
 
-    def __init__(self, tokenizer):
+    def __init__(self, tokenizer: Tokenizer):
         self.tokenizer = tokenizer
         self.current = []
 
-    def parse_expr(self, string):
+    def parse_expr(self, string: str) -> Atom:
+        """
+        Parses expression from text.
+        """
         self.tokenizer.read(string)
         self.current = self.tokenizer.next_match()
         try:
@@ -19,8 +25,11 @@ class Parser:
         except Exception as e:
             raise ParseError(f"Following error occured while parsing: {e}")
 
-    def parse_command(self, command):
-        command = command[1:-1]
+    def parse_command(self, command_str: str) -> Command:
+        """
+        Parses commands from text.
+        """
+        command = command_str[1:-1]
         tokens = command.split(":")
         if len(tokens) == 2:
             name = tokens[0]
@@ -34,30 +43,26 @@ class Parser:
         else:
             raise ParseError(f"Command {command} is not valid.")
     
-
-
-    def isValid(self, tokens: list[str]):
-        if self.current["type"] == "INVALID_CHAR":
-            # raise Exception("This character is not supported.")
-            return False
-
-        if self.isToken(tokens) == False:
-            # raise Exception("Incorrect token encountered.")
-            return False
-        
-        return True
-
-    def advance(self):
+    def advance(self) -> None:
+        """
+        Advances to next token.
+        """
         self.current = self.tokenizer.next_match()
 
-    def isToken(self, tokens):
+    def isToken(self, tokens: list[str]) -> bool:
+        """
+        Determines whether current token is in the tokens input list.
+        """
         if self.current:
             return self.current["type"] in tokens
 
-    def expression(self):
+    def expression(self) -> Plus:
         return self.addition()
 
-    def addition(self):
+    def addition(self) -> Mul:
+        """
+        Determines whether token is a addition or substraction. Returns resulting token.
+        """
         left = self.multiplication()
 
         while self.isToken(['PLUS', 'MINUS']):
@@ -70,10 +75,13 @@ class Parser:
 
         return left
 
-    def function(self):
+    def function(self) -> None:
         pass
 
-    def multiplication(self):
+    def multiplication(self) -> Expon:
+        """
+        Determines whether token is a multiplication or division. Returns resulting token.
+        """
         left = self.exponentiation()
 
         while self.isToken(['MUL', 'DIV']):
@@ -86,7 +94,10 @@ class Parser:
 
         return left
 
-    def exponentiation(self):
+    def exponentiation(self) -> Atom:
+        """
+        Determines whether token is a exponentiation. Returns resulting token.
+        """
         left = self.basic()
 
         while self.isToken(['EXP']):
@@ -95,7 +106,10 @@ class Parser:
 
         return left
 
-    def function(self):
+    def function(self) -> Atom:
+        """
+        Determines whether token is a function. Returns resulting token.
+        """
         left = self.multiplication()
 
         if self.isToken(['LPAR']):
@@ -114,7 +128,10 @@ class Parser:
         else:
             return left
 
-    def basic(self):
+    def basic(self) -> Atom:
+        """
+        Determines whether token is a variable, number, command or expr in parentheses. Returns resulting token.
+        """
         tok = self.current
 
         if self.isToken(["VAR"]):
