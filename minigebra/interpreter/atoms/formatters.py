@@ -1,6 +1,9 @@
 from . import atoms as atoms
 
 class Atom:
+    """
+    Provides functions to turn atomic expressions to string or latex format.
+    """
     def __init__(self, parent):
         self.parent = parent
 
@@ -179,10 +182,11 @@ class Function(Atom):
         return f"{self.name}({self.__string_args_format()})"
 
     def __string_args_format(self):
-        return "".join([f", {str(arg)}" for arg in self.args])
+        return str(self.args[0]) + "".join([f", {str(arg)}" for arg in self.args[1:]])
 
     def _latex_args_format(self):
-        return "".join([f", {arg.print('latex')}" for arg in self.args])
+        first = self.args[0].print("latex")
+        return "(" + first + r"".join([f", {arg.print('latex')}" for arg in self.args[1:]]) + ")"
 
 class Sin(Function):
     def __init__(self, name, args, parent):
@@ -204,18 +208,6 @@ class Tan(Function):
 
     def latex_format(self):
         return r"\tan{" + self._latex_args_format() + "}"
-
-class Asin(Function):
-    def __init__(self, name, args, parent):
-        super().__init__(name, args, parent)
-
-class Acos(Function):
-    def __init__(self, name, args, parent):
-        super().__init__(name, args, parent)
-
-class Atan(Function):
-    def __init__(self, name, args, parent):
-        super().__init__(name, args, parent)
 
 class Exp(Function):
     def __init__(self, name, args, parent):

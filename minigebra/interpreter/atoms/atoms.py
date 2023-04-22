@@ -6,6 +6,10 @@ from . import formatters as formatters
 from . import differentiators as differentiators
 
 class Atom:
+    """
+    Provides representation of atomic expressions in python code. Each expression is of type Atom or one of it's children.
+    Each Atom provides functionality such as pretty printing, simplification, differentiation and evaluation.
+    """
     def __init__(self):
         self.init_args = ()
 
@@ -79,6 +83,8 @@ class Atom:
             return self.get_formatter().mathjax_format2()
         elif option == "latex":
             return self.get_formatter().latex_format()
+        else:
+            return str(self)
 
 
 class BinaryOperator(Atom):
@@ -220,21 +226,6 @@ class Tan(Function):
     def __init__(self, args):
         super().__init__(self.name, args, np.tan)
 
-class Asin(Function):
-    name = "asin"
-    def __init__(self, args):
-        super().__init__(self.name, args, np.arcsin)
-
-class Acos(Function):
-    name = "acos"
-    def __init__(self, args):
-        super().__init__(self.name, args, np.arccos)
-
-class Atan(Function):
-    name = "atan"
-    def __init__(self, args):
-        super().__init__(self.name, args, np.arctan)
-
 class Exp(Function):
     name = "exp"
     def __init__(self, args):
@@ -245,4 +236,4 @@ class Ln(Function):
     def __init__(self, args):
         super().__init__(self.name, args, np.log)
 
-BUILT_IN_FUNCTIONS = [Sin, Cos, Tan, Asin, Acos, Atan, Exp, Ln]
+BUILT_IN_FUNCTIONS = [Sin, Cos, Tan, Exp, Ln]

@@ -11,15 +11,12 @@ from PyQt5.QtWidgets import QVBoxLayout, QWidget
 
 import numpy as np
 
-# for type hinting
-from ..interpreter.atoms import Atom
-
 class PlotData:
     """
     This data type stores information about an expression to be plotted.
     """
-    def __init__(self, expr: Atom, vars: list[str] = ["x"], domain: tuple[int] = (-10,10), precision:float = 0.01) -> None:
-        self.expr = expr
+    def __init__(self, expr, vars: list[str] = ["x"], domain: tuple[int] = (-10,10), precision:float = 0.01) -> None:
+        self.expr = expr # Atom like expr
         self.domain = domain
         self.precision = precision
         self.vars = vars

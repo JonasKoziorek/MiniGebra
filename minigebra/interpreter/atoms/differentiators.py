@@ -5,6 +5,9 @@ class DifferentiationError(Exception):
     pass
 
 class Atom:
+    """
+    Provides functions to symbolically differentiate atomic expressions.
+    """
     def __init__(self, parent):
         self.parent = parent
 
@@ -115,30 +118,6 @@ class Tan(Function):
             return atoms.Num(1) / (atoms.Cos(self.args)*atoms.Cos(self.args)) * arg.diff()
         else:
             self._error_message()
-
-class Asin(Function):
-    def __init__(self, name, args, parent):
-        super().__init__(name, args, parent)
-
-    def diff(self):
-        # to be added
-        return self.parent
-
-class Acos(Function):
-    def __init__(self, name, args, parent):
-        super().__init__(name, args, parent)
-
-    def diff(self):
-        # to be added
-        return self.parent
-
-class Atan(Function):
-    def __init__(self, name, args, parent):
-        super().__init__(name, args, parent)
-
-    def diff(self):
-        # to be added
-        return self.parent
 
 class Exp(Function):
     def __init__(self, name, args, parent):

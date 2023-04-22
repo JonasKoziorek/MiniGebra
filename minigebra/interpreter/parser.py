@@ -10,9 +10,10 @@ class ParseError(Exception):
 
 class Parser:
 
-    def __init__(self, tokenizer: Tokenizer):
+    def __init__(self, tokenizer: Tokenizer, built_in_functions: list[Function]):
         self.tokenizer = tokenizer
         self.current = []
+        self.built_in_functions = built_in_functions
 
     def parse_expr(self, string: str) -> Atom:
         """
@@ -42,6 +43,18 @@ class Parser:
                 raise Exception(f"Unknown command {command}.\nAvailable commands are {VALID_NAMES}")
         else:
             raise ParseError(f"Command {command} is not valid.")
+
+    def __determine_function(self, name: str, args: list[Atom]):
+        """
+        Checks whether a function belongs to built_in_functions.
+        """
+        names = [func.name for func in self.built_in_functions]
+        try:
+            index = names.index(name)
+            func_type =  self.built_in_functions[index]
+            return func_type(args)
+        except ValueError:
+            return Function(name, args)
     
     def advance(self) -> None:
         """
@@ -122,7 +135,8 @@ class Parser:
 
             self.advance()
             if type(left) == Var:
-                return Function(left.value, args )
+                return self.__determine_function(left.value, args)
+                # return Function(left.value, args)
             else:
                 raise Exception("Incorret function expression.")
         else:
@@ -146,7 +160,8 @@ class Parser:
 
                 self.advance()
                 name = Var(tok["token"]).value
-                return Function(name, args )
+                return self.__determine_function(name, args)
+                # return Function(name, args)
             
             else:
                 return Var(tok["token"])
@@ -167,7 +182,6 @@ class Parser:
             self.advance()
             expr = expr[1: -1]
             return Command(expr)
-            # return  Parser(Tokenizer(tokens)).read(expr)
         
         else:
             raise Exception("Invalid basic token.")

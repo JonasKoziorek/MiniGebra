@@ -2,6 +2,9 @@ from . import atoms as atoms
 from numpy import gcd
 
 class Atom:
+    """
+    This class provides functions to simplify atomic expressions.
+    """
     def __init__(self, parent):
         self.parent = parent
 
@@ -313,18 +316,6 @@ class Cos(Function):
         super().__init__(name, args, parent)
 
 class Tan(Function):
-    def __init__(self, name, args, parent):
-        super().__init__(name, args, parent)
-
-class Asin(Function):
-    def __init__(self, name, args, parent):
-        super().__init__(name, args, parent)
-
-class Acos(Function):
-    def __init__(self, name, args, parent):
-        super().__init__(name, args, parent)
-
-class Atan(Function):
     def __init__(self, name, args, parent):
         super().__init__(name, args, parent)
 

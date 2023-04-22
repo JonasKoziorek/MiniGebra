@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication
 import sys
 
-from .atoms import Function, BinaryOperator, Atom
+from .atoms import Atom
 from .tokenizer import Tokenizer
 from .parser import Parser
 from .preprocessor import Preprocessor
@@ -19,21 +19,6 @@ class Interpreter:
     def __init__(self):
         self.database = Database()
         self.database.expressions = self.database.expressions
-        self.functions = self.database.built_in_functions
-        self.names = [el.name for el in self.functions]
-
-    def set_build_in_functions(self, functions: list[Function]) -> None:
-        """
-        Specifies built in function that interpreter recognizes.
-        """
-        self.functions = functions
-
-    def feed(self, expressions: list[Atom]) -> None:
-        """
-        Accepts parsed math expressions. Locates built-in functions in the parsed expressions.
-        """
-        self.database.expressions = [expressions]
-        self.rename_funcs()
 
     def print_expressions(self, padding: int = 1) -> None:
         """
@@ -62,31 +47,6 @@ class Interpreter:
         """
         self.print_expressions(padding=padding)
         self.print_derivations(padding=padding)
-
-    def rename_funcs(self) -> None:
-        """
-        Renames functions in inputed parsed expression from general functions to their specific forms. 
-        """
-        self.database.expressions = [[self.rename_func(expr) for expr in elem] for elem in self.database.expressions]
-
-    def rename_func(self, expr: Atom):
-        """
-        Checks whether an expr is a built-in function. If so, it converts expr to that function.
-        """
-        if isinstance(expr, Function):
-            try:
-                index = self.names.index(expr.name)
-                func =  self.functions[index]
-                return func([self.rename_func(i) for i  in expr.args])
-            except ValueError:
-                return expr
-
-        elif isinstance(expr, BinaryOperator):
-            operation = type(expr)
-            return operation(self.rename_func(expr.left), self.rename_func(expr.right))
-
-        else:
-            return expr
 
     def diff(self, diff_order: int = 1) -> None:
         """
@@ -128,8 +88,7 @@ class Interpreter:
         """
         try:
             commands, exprs = Preprocessor(input).preprocess()
-            t = Tokenizer()
-            p = Parser(t)
+            p = Parser(Tokenizer(), self.database.built_in_functions)
             commands = [p.parse_command(comm) for comm in commands]
             expressions = [p.parse_expr(expr) for expr in exprs]
             return commands, expressions
@@ -152,7 +111,7 @@ class Interpreter:
         """
         Accepts list of expressions as input. Simplifies and differentiates this input. Saves it into the database.
         """
-        self.feed(exprs)
+        self.database.expressions = exprs
         self.diff(self.database.diff_order)
         self.simplify()
 
@@ -175,7 +134,7 @@ class Interpreter:
         
     def interpreter_loop(self, plot: bool =False, padding: int =1) -> None:
         """
-        Interprets list of commands and saves information about them into the database.
+        This functions provides the command line interface.
         """
         while True:
             text = input("MiniGebra> ")
@@ -199,7 +158,10 @@ class Interpreter:
                     print(e)
                 print("")
 
-    def interpret_text(self, input) -> None:
+    def interpret_text(self, input: str) -> None:
+        """
+        Interprets commands and expressions in the input string. 
+        """
         commands, expressions = self.compile(input)
         self.interpret_exprs(expressions)
         self.interpret_commands(commands)
