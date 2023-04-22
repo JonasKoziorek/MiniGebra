@@ -1,7 +1,7 @@
 # usage example -- very simple
 import minigebra
 try:
-    minigebra.run("GUI")
+    minigebra.run("CLI")
 except SystemExit as code:
     if str(code) == "0":
         print("App terminated successfully.")

@@ -111,7 +111,7 @@ class Interpreter:
         """
         Accepts list of expressions as input. Simplifies and differentiates this input. Saves it into the database.
         """
-        self.database.expressions = exprs
+        self.database.expressions = [exprs]
         self.diff(self.database.diff_order)
         self.simplify()
 
@@ -126,7 +126,10 @@ class Interpreter:
             elif name == "params":
                 self.database.parameters = command.params
             elif name == "domain":
-                self.database.domain = (command.params[0], command.params[1])
+                left = command.params[0].lstrip("(")
+                right = command.params[1].rstrip(")")
+
+                self.database.domain = (float(left), float(right))
             elif name == "precision":
                 self.database.precision = float(command.params[0])
             elif name == "diff_order":
@@ -141,6 +144,7 @@ class Interpreter:
             commands, expressions = self.compile(text)
             if commands:
                 self.print_commands(commands, padding=padding)
+                self.interpret_commands(commands)
 
             if expressions:
                 try:
@@ -150,9 +154,9 @@ class Interpreter:
                         self.generate_data()
                         app = QApplication(sys.argv)
                         c = Canvas()
-                        c.montage(self.database.data)
+                        c.montage(self.database.plot_data)
                         c.show()
-                        sys.exit(app.exec_())
+                        app.exec_()
 
                 except Exception as e:
                     print(e)

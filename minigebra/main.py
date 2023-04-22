@@ -19,7 +19,7 @@ def run(type: str) -> None:
 
     elif type == "CLI":
         I = Interpreter()
-        I.interpreter_loop(plot=True, diff_order=1, padding=2)
+        I.interpreter_loop(plot=True, padding=2)
 
     else:
         raise Exception(f"You selected an app option {type}. Supported options are GUI and CLI.")
