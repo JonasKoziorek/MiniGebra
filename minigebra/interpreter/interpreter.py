@@ -55,10 +55,9 @@ class Interpreter:
         expr = self.database.expressions[0]
         self.database.expressions=[expr]
 
-        for i in range(diff_order):
+        for _ in range(diff_order):
             expr = [i.diff() for i in expr]
             self.database.expressions.append(expr)
-
 
     def simplify(self) -> None:
         """
@@ -153,10 +152,12 @@ class Interpreter:
                     if plot:
                         self.generate_data()
                         app = QApplication(sys.argv)
-                        c = Canvas()
-                        c.montage(self.database.plot_data)
-                        c.show()
+                        canvas = Canvas()
+                        canvas.montage(self.database.plot_data)
+                        canvas.show()
                         app.exec_()
+                        del canvas
+                        del app
 
                 except Exception as e:
                     print(e)
